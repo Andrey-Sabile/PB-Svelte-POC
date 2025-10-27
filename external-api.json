@@ -1,0 +1,2730 @@
+{
+    "x-generator": "NSwag v14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))",
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LeoLMS API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/CalendarEvents": {
+            "get": {
+                "tags": [
+                    "CalendarEvents"
+                ],
+                "operationId": "GetCalendarEventsWithPagination",
+                "parameters": [
+                    {
+                        "name": "Start",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        },
+                        "x-position": 1
+                    },
+                    {
+                        "name": "End",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                        },
+                        "x-position": 2
+                    },
+                    {
+                        "name": "Status",
+                        "in": "query",
+                        "schema": {
+                            "nullable": true,
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/CalendarEventStatus"
+                                }
+                            ]
+                        },
+                        "x-position": 3
+                    },
+                    {
+                        "name": "Type",
+                        "in": "query",
+                        "schema": {
+                            "nullable": true,
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/EventType"
+                                }
+                            ]
+                        },
+                        "x-position": 4
+                    },
+                    {
+                        "name": "Scope",
+                        "in": "query",
+                        "schema": {
+                            "nullable": true,
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/EventScope"
+                                }
+                            ]
+                        },
+                        "x-position": 5
+                    },
+                    {
+                        "name": "ClassId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "nullable": true
+                        },
+                        "x-position": 6
+                    },
+                    {
+                        "name": "SubjectId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "nullable": true
+                        },
+                        "x-position": 7
+                    },
+                    {
+                        "name": "PageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 8
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 9
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedListOfCalendarEventBriefDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "CalendarEvents"
+                ],
+                "operationId": "CreateCalendarEvent",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCalendarEventCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/CalendarEvents/{id}": {
+            "put": {
+                "tags": [
+                    "CalendarEvents"
+                ],
+                "operationId": "UpdateCalendarEvent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCalendarEventCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "CalendarEvents"
+                ],
+                "operationId": "DeleteCalendarEvent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Classrooms": {
+            "get": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "GetClassrooms",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClassroomsVm"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "CreateClassroom",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateClassroomCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Classrooms/{id}": {
+            "get": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "GetClassroomDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClassroomDetailsDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "UpdateClassroom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateClassroomCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "DeleteClassroom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Classrooms/AddStudents": {
+            "post": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "AddStudentsToClassroom",
+                "parameters": [
+                    {
+                        "name": "classroomId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddStudentsToClassroomCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Classrooms/{id}/students/{studentId}": {
+            "delete": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "RemoveStudentFromClassroom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    },
+                    {
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 2
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Classrooms/AddTeachers": {
+            "post": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "AddTeachersToClassroom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddTeacherToClassroomCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Classrooms/{id}/teachers/{teacherId}": {
+            "delete": {
+                "tags": [
+                    "Classrooms"
+                ],
+                "operationId": "RemoveTeacherFromClassroom",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    },
+                    {
+                        "name": "teacherId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 2
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Guardians": {
+            "get": {
+                "tags": [
+                    "Guardians"
+                ],
+                "operationId": "GetGuardians",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuardiansVm"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Guardians"
+                ],
+                "operationId": "CreateGuardian",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateGuardianCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Guardians/{id}": {
+            "put": {
+                "tags": [
+                    "Guardians"
+                ],
+                "operationId": "UpdateGuardian",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateGuardianCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/StudentDirectory": {
+            "get": {
+                "tags": [
+                    "StudentDirectory"
+                ],
+                "operationId": "GetStudentDirectoryPage",
+                "parameters": [
+                    {
+                        "name": "Search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "x-position": 1
+                    },
+                    {
+                        "name": "PageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 2
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedListOfStudentDirectoryListItemDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/StudentDirectory/{studentId}": {
+            "get": {
+                "tags": [
+                    "StudentDirectory"
+                ],
+                "operationId": "GetStudentDirectoryDetail",
+                "parameters": [
+                    {
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentDirectoryDetailDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Students": {
+            "get": {
+                "tags": [
+                    "Students"
+                ],
+                "operationId": "GetStudents",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StudentsVm"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Students"
+                ],
+                "operationId": "CreateStudent",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateStudentCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Students/{id}": {
+            "put": {
+                "tags": [
+                    "Students"
+                ],
+                "operationId": "UpdateStudent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateStudentCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Subjects": {
+            "get": {
+                "tags": [
+                    "Subjects"
+                ],
+                "operationId": "GetSubjects",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubjectsVm"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Subjects"
+                ],
+                "operationId": "CreateSubject",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateSubjectCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Subjects/{id}": {
+            "put": {
+                "tags": [
+                    "Subjects"
+                ],
+                "operationId": "UpdateSubject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSubjectCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Subjects"
+                ],
+                "operationId": "DeleteSubject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/Teachers": {
+            "get": {
+                "tags": [
+                    "Teachers"
+                ],
+                "operationId": "GetTeachers",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TeachersVm"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Teachers"
+                ],
+                "operationId": "CreateTeacher",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTeacherCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Teachers/lookup": {
+            "get": {
+                "tags": [
+                    "Teachers"
+                ],
+                "operationId": "GetTeacherLookup",
+                "parameters": [
+                    {
+                        "name": "Search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "x-position": 1
+                    },
+                    {
+                        "name": "PageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 2
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedListOfTeacherLookupDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/Teachers/{id}": {
+            "put": {
+                "tags": [
+                    "Teachers"
+                ],
+                "operationId": "UpdateTeacher",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTeacherCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/TodoItems": {
+            "get": {
+                "tags": [
+                    "TodoItems"
+                ],
+                "operationId": "GetTodoItemsWithPagination",
+                "parameters": [
+                    {
+                        "name": "ListId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    },
+                    {
+                        "name": "PageNumber",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 2
+                    },
+                    {
+                        "name": "PageSize",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedListOfTodoItemBriefDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "TodoItems"
+                ],
+                "operationId": "CreateTodoItem",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTodoItemCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/TodoItems/{id}": {
+            "put": {
+                "tags": [
+                    "TodoItems"
+                ],
+                "operationId": "UpdateTodoItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTodoItemCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "TodoItems"
+                ],
+                "operationId": "DeleteTodoItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/TodoItems/UpdateDetail/{id}": {
+            "put": {
+                "tags": [
+                    "TodoItems"
+                ],
+                "operationId": "UpdateTodoItemDetail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTodoItemDetailCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/TodoLists": {
+            "get": {
+                "tags": [
+                    "TodoLists"
+                ],
+                "operationId": "GetTodoLists",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TodosVm"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "TodoLists"
+                ],
+                "operationId": "CreateTodoList",
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTodoListCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 1
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/TodoLists/{id}": {
+            "put": {
+                "tags": [
+                    "TodoLists"
+                ],
+                "operationId": "UpdateTodoList",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "requestBody": {
+                    "x-name": "command",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTodoListCommand"
+                            }
+                        }
+                    },
+                    "required": true,
+                    "x-position": 2
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "TodoLists"
+                ],
+                "operationId": "DeleteTodoList",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        },
+                        "x-position": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PaginatedListOfCalendarEventBriefDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CalendarEventBriefDto"
+                        }
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "hasPreviousPage": {
+                        "type": "boolean"
+                    },
+                    "hasNextPage": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "CalendarEventBriefDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/CalendarEventStatus"
+                            }
+                        ]
+                    },
+                    "type": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventType"
+                            }
+                        ]
+                    },
+                    "scope": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventScope"
+                            }
+                        ]
+                    },
+                    "start": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "classId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "CalendarEventStatus": {
+                "type": "integer",
+                "description": "",
+                "x-enumNames": [
+                    "Draft",
+                    "Cancelled",
+                    "Scheduled"
+                ],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "EventType": {
+                "type": "integer",
+                "description": "",
+                "x-enumNames": [
+                    "Exam",
+                    "Holiday",
+                    "Announcement"
+                ],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "EventScope": {
+                "type": "integer",
+                "description": "",
+                "x-enumNames": [
+                    "School",
+                    "Class",
+                    "Subject"
+                ],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "CreateCalendarEventCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "start": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/CalendarEventStatus"
+                            }
+                        ]
+                    },
+                    "type": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventType"
+                            }
+                        ]
+                    },
+                    "scope": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventScope"
+                            }
+                        ]
+                    },
+                    "classId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "UpdateCalendarEventCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "start": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/CalendarEventStatus"
+                            }
+                        ]
+                    },
+                    "type": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventType"
+                            }
+                        ]
+                    },
+                    "scope": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventScope"
+                            }
+                        ]
+                    },
+                    "classId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "ClassroomsVm": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "classrooms": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ClassroomDto"
+                        }
+                    }
+                }
+            },
+            "ClassroomDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "teacherId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "createdOn": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ClassroomDetailsDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "teacherId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "createdOn": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "teachers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ClassroomTeacherDto"
+                        }
+                    },
+                    "students": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ClassroomStudentDto"
+                        }
+                    }
+                }
+            },
+            "ClassroomTeacherDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ClassroomStudentDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateClassroomCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "teacherId": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "UpdateClassroomCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subjectId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "teacherId": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "AddStudentsToClassroomCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "classroomId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "studentIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                }
+            },
+            "AddTeacherToClassroomCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "classroomId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "teacherIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                }
+            },
+            "GuardiansVm": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "guardians": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuardianDto"
+                        }
+                    }
+                }
+            },
+            "GuardianDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/GuardianAddressDto"
+                    },
+                    "students": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuardianStudentDto"
+                        }
+                    }
+                }
+            },
+            "GuardianAddressDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "GuardianStudentDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateGuardianCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateGuardianCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PaginatedListOfStudentDirectoryListItemDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StudentDirectoryListItemDto"
+                        }
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "hasPreviousPage": {
+                        "type": "boolean"
+                    },
+                    "hasNextPage": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "StudentDirectoryListItemDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/StudentDirectoryAddressDto"
+                    },
+                    "guardians": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StudentDirectoryGuardianSummaryDto"
+                        }
+                    }
+                }
+            },
+            "StudentDirectoryAddressDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "StudentDirectoryGuardianSummaryDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "StudentDirectoryDetailDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/StudentDirectoryAddressDto"
+                    },
+                    "guardians": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StudentDirectoryGuardianDto"
+                        }
+                    }
+                }
+            },
+            "StudentDirectoryGuardianDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/StudentDirectoryAddressDto"
+                    }
+                }
+            },
+            "StudentsVm": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "students": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StudentDto"
+                        }
+                    }
+                }
+            },
+            "StudentDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/StudentAddressDto"
+                    }
+                }
+            },
+            "StudentAddressDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateStudentCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateStudentCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SubjectsVm": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "subjects": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubjectDto"
+                        }
+                    }
+                }
+            },
+            "SubjectDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "CreateSubjectCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "UpdateSubjectCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "TeachersVm": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "teachers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TeacherDto"
+                        }
+                    }
+                }
+            },
+            "TeacherDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/TeacherAddressDto"
+                    }
+                }
+            },
+            "TeacherAddressDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PaginatedListOfTeacherLookupDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TeacherLookupDto"
+                        }
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "hasPreviousPage": {
+                        "type": "boolean"
+                    },
+                    "hasNextPage": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "TeacherLookupDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateTeacherCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateTeacherCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "street1": {
+                        "type": "string"
+                    },
+                    "street2": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PaginatedListOfTodoItemBriefDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TodoItemBriefDto"
+                        }
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalCount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "hasPreviousPage": {
+                        "type": "boolean"
+                    },
+                    "hasNextPage": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "TodoItemBriefDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "listId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "done": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "CreateTodoItemCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "listId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "UpdateTodoItemCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "done": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "UpdateTodoItemDetailCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "listId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "priority": {
+                        "$ref": "#/components/schemas/PriorityLevel"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "PriorityLevel": {
+                "type": "integer",
+                "description": "",
+                "x-enumNames": [
+                    "None",
+                    "Low",
+                    "Medium",
+                    "High"
+                ],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "TodosVm": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "priorityLevels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LookupDto"
+                        }
+                    },
+                    "lists": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TodoListDto"
+                        }
+                    }
+                }
+            },
+            "LookupDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "TodoListDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "colour": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TodoItemDto"
+                        }
+                    }
+                }
+            },
+            "TodoItemDto": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "listId": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "done": {
+                        "type": "boolean"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "CreateTodoListCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "UpdateTodoListCommand": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            }
+        }
+    }
+}
