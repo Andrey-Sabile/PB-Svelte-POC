@@ -56,7 +56,6 @@ export type TodoItemRecord = {
 	created?: IsoDateString
 	id: string
 	updated?: IsoDateString
-	user?: RecordIdString
 }
 
 export enum TodoListColourOptions {
