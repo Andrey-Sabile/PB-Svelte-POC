@@ -6,7 +6,7 @@ Public/marketing/auth routes → src/routes/ (top level).
 Authenticated LMS views → grouped under src/routes/(app)/ with nested subfolders per feature (classrooms/, events/, announcements/, exams/, lessons/, quizzes/, grades/).
 Rendering Flags
 
-Public pages: add +page.ts (or +layout.ts) with export const prerender = true; to bake static HTML.
+Public pages: add +page.ts (or +layout.ts) with export const prerender = true and export const ssr=true; to bake static HTML.
 App shell: in src/routes/(app)/+layout.ts, set export const ssr = false; and export const csr = true; to rely on client-only rendering.
 Feature pages needing SEO or stable content can opt back into prerendering individually (+page.ts with both prerender = true; ssr = true;)—omit for highly dynamic views.
 Shared Layouts

@@ -7,7 +7,7 @@
 		"predev": "npm run typegen",
 		"dev": "vite dev",
 		"prebuild": "npm run typegen",
-		"build": "vite build",
+		"build": "vite build && npm run deploy:static",
 		"preview": "vite preview",
 		"env:dev": "../scripts/sync-env.sh frontend dev",
 		"env:prod": "../scripts/sync-env.sh frontend prod",
@@ -21,7 +21,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"typegen": "pocketbase-typegen --out ./src/lib/types/pocketbase.d.ts --db ../pb_data/data.db"
+		"typegen": "pocketbase-typegen --out ./src/lib/types/pocketbase.d.ts --db ../pb_data/data.db",
+		"deploy:static": "bash -lc 'set -euo pipefail; mkdir -p ../pb_public; find ../pb_public -mindepth 1 -maxdepth 1 -exec rm -rf {} +; cp -R build/. ../pb_public/'"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
@@ -35,6 +36,7 @@
 		"@tailwindcss/vite": "^4.1.13",
 		"@types/node": "^22",
 		"@vitest/browser": "^3.2.4",
+		"daisyui": "^5.3.10",
 		"eslint": "^9.36.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.12.4",
