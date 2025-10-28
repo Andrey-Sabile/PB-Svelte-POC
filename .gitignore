@@ -2,3 +2,5 @@
 .env.*
 .pb-env
 .DS_Store
+pb_public
+pb_data
