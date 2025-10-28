@@ -9,10 +9,6 @@
 		"prebuild": "npm run typegen",
 		"build": "vite build && npm run deploy:static",
 		"preview": "vite preview",
-		"env:dev": "../scripts/sync-env.sh frontend dev",
-		"env:prod": "../scripts/sync-env.sh frontend prod",
-		"pb:env:dev": "../scripts/sync-env.sh pocketbase dev",
-		"pb:env:prod": "../scripts/sync-env.sh pocketbase prod",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -21,8 +17,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"typegen": "pocketbase-typegen --out ./src/lib/types/pocketbase.d.ts --db ../pb_data/data.db",
-		"deploy:static": "bash -lc 'set -euo pipefail; mkdir -p ../pb_public; find ../pb_public -mindepth 1 -maxdepth 1 -exec rm -rf {} +; cp -R build/. ../pb_public/'"
+		"typegen": "pocketbase-typegen --out ./src/lib/types/pocketbase.d.ts --db ../backend/pb_data/data.db",
+		"deploy:static": "bash -lc 'set -euo pipefail; mkdir -p ../backend/pb_public; find ../backend/pb_public -mindepth 1 -maxdepth 1 -exec rm -rf {} +; cp -R build/. ../backend/pb_public/'"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
