@@ -1,1 +1,0 @@
-import"../chunks/DsnmJJEf.js";import{l as n,k as a}from"../chunks/BoATxm5D.js";var r=n("<h1>Landing Page, You should see even when only hitting base url</h1>");function s(o,p){var e=r();a(o,e)}export{s as component};
