@@ -1,48 +1,40 @@
-Page Cheatsheet
+Implementation Plan
 
-Route Placement
+PocketBase Rules
 
-Public/marketing/auth routes → src/routes/ (top level).
-Authenticated LMS views → grouped under src/routes/(app)/ with nested subfolders per feature (classrooms/, events/, announcements/, exams/, lessons/, quizzes/, grades/).
-Rendering Flags
+In the Admin UI, set TodoList and TodoItem collection rules so only authenticated users can read/write (e.g. @request.auth?.id != ''). Use list/view rules to scope data per owner via field filters once ownership fields exist.
+Auth Fields & Relations
 
-Public pages: add +page.ts (or +layout.ts) with export const prerender = true and export const ssr=true; to bake static HTML.
-App shell: in src/routes/(app)/+layout.ts, set export const ssr = false; and export const csr = true; to rely on client-only rendering.
-Feature pages needing SEO or stable content can opt back into prerendering individually (+page.ts with both prerender = true; ssr = true;)—omit for highly dynamic views.
-Shared Layouts
+Add a required user relation field on both TodoList and TodoItem pointing to users to enforce ownership. Configure create/update rules so user = @request.auth.id.
+JS SDK Wrapper
 
-src/routes/+layout.ts: fetch lightweight global config (branding, feature flags) via PocketBase REST during load.
-src/routes/(app)/+layout.ts: guard auth (redirect if no session), fetch user profile/role, expose locals.pb SDK instance.
-Role-specific layouts (e.g. src/routes/(app)/teacher/+layout.ts) load common data for that role (class rosters, upcoming assignments) and provide contexts via load return value.
-Data Fetching Pattern
+Create pb-sv/src/lib/pocketbase.ts exporting a singleton PocketBase client typed with TypedPocketBase from pocketbase.d.ts, plus helpers to reset the auth store.
+Login Route (CSR)
 
-Use PocketBase JS SDK (from pb helper) inside load for initial data; expose via returned props.
-On client, keep state with Svelte 5 runes (let records = $state([]);).
-Subscribe to real-time updates in onMount using pb.collection('...').subscribe(...) and update state.
-Feature Modules
+Scaffold pb-sv/src/routes/login/+page.svelte using Svelte 5 runes (let form = $state({ email: '', password: '' })). On submit call pb.collection('users').authWithPassword(email, password); on success goto('/app').
+Add pb-sv/src/routes/login/+page.ts with export const prerender = true so the login screen is statically generated.
+Logout Handler
 
-Classroom Management: +page.ts load fetches classes (pb.collection('classrooms').getList(...)). Table component displays; allow role-gated actions.
-Events/Calendar: fetch events, cache in $state; integrate client-only calendar lib inside if (browser) guard.
-Notifications/Announcements: load latest items, use real-time subscriptions for pushes.
-Exam Builder/Question Bank: separate routes for bank (question-bank/+page.svelte) and builder (exam-builder/+page.svelte). Client-only editors; persist via SDK mutations.
-Content & Lesson Planner: +page.ts load pulls lessons; use derived filters per class/subject.
-Quiz Taker: render CSR-only route; on mount fetch quiz, start timer, submit answers via SDK.
-Grade Views: server load fetches grade summaries; allow Excel/PDF export via client actions calling PocketBase endpoints/hooks.
-Deployment Loop
+Add pb-sv/src/routes/logout/+page.ts with a load that clears pb.authStore and redirects to /login.
+Protected App Shell
 
-npm run build → copies pb-sv/build/ into PocketBase pb_public/.
-Ensure env uses relative asset paths since static hosting sits under PocketBase server domain.
-Security/Rules Checklist
+Under pb-sv/src/routes/(app)/+layout.ts export ssr = false, csr = true, and a load that checks pb.authStore.isValid. Redirect to /login if invalid; otherwise return { user: pb.authStore.model }.
+Create the paired pb-sv/src/routes/(app)/+layout.svelte that reads { user } and renders a navigation shell.
+Global Unauthorized Handler
 
-Define PocketBase collection rules per feature for teacher/student/parent access.
-Use PocketBase expand to prefetch related data (e.g., classroom -> teacher).
-Prefer calling PocketBase actions via JS SDK; redirect unauthenticated users to /login.
-Quality-of-Life Notes
+Implement a small utility (e.g. src/lib/utils/auth.ts) wrapping PocketBase requests: if a call throws 401/403, clear the store and goto('/login').
+TodoList Page
 
-Centralize type defs (PocketBase Typegen) in src/lib/types/pb.ts.
-Keep form actions lean: use SvelteKit form actions for server mutations when SSR is enabled; else call SDK and handle errors in client state.
-Document route purpose + rendering mode in file header comments for quick reference.
-Natural next steps:
+Add pb-sv/src/routes/(app)/todolists/+page.ts with a load that calls ensureAuth(pb.collection('TodoList').getFullList({ filter: 'user = @request.auth.id' })).
+In +page.svelte, initialize state with $state(data.lists) and use Svelte 5 syntax for interactions. Provide forms to create/update using the SDK, calling ensureAuth.
+TodoItem Nested Route
 
-Scaffold (app) route group and shared auth layout.
-Outline PocketBase schema matching the feature bullets before implementing the pages.
+Under todolists/[id]/+page.ts, fetch the specific list and its items via expand (e.g. getOne(id, { expand: 'TodoItem' })). Guard with ensureAuth.
+Render in +page.svelte, allow adding items via pb.collection('TodoItem').create({ ...list relation..., user: currentUser }).
+Hydration of Auth Store
+
+On app initialization (e.g. src/lib/pocketbase.ts), load any stored auth data (pb.authStore.loadFromCookie(...) if using cookies) or rely on the SDK’s default localStorage persistence.
+Optional Enhancements
+
+Add a tiny hooks.server.ts later only if you introduce server endpoints that need the session (deserialize cookie, inject into locals).
+Write vitest tests for the util wrapper to ensure redirects occur on unauthorized errors.

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-
 	let { data }: PageProps = $props();
 </script>
 
-<h1>Landing Page, You should see even when only hitting base url</h1>
+<h1>Hello</h1>
