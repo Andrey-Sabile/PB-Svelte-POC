@@ -5,7 +5,49 @@
 	import { resolve } from '$app/paths';
 	import { authState } from '$lib/stores/auth';
 	import type { LayoutProps } from './$types';
-	import { ClipboardList, PanelLeftOpen } from '@lucide/svelte';
+	import {
+		ClipboardList,
+		House,
+		PanelLeftOpen,
+		BookOpen,
+		BookUser,
+		Calendar,
+		type Icon as IconType
+	} from '@lucide/svelte';
+
+	type MenuItem = {
+		name: string;
+		href: string;
+		icon: typeof IconType;
+	};
+
+	const menuItems: MenuItem[] = [
+		{
+			name: 'Home',
+			href: '',
+			icon: House
+		},
+		{
+			name: 'Classes',
+			href: 'classes',
+			icon: BookOpen
+		},
+		{
+			name: 'Calendar',
+			href: 'calendar',
+			icon: Calendar
+		},
+		{
+			name: 'Directory',
+			href: 'directory',
+			icon: BookUser
+		},
+		{
+			name: 'Todo',
+			href: 'todolist',
+			icon: ClipboardList
+		}
+	];
 
 	let unsub: () => void;
 
@@ -44,29 +86,20 @@
 		>
 			<a href="" class="btn btn-ghost mt-4 self-center text-xl font-semibold">Leo</a>
 
-			<ul class="menu mt-6 w-full grow p-4">
-				<li>
-					<a
-						href="todolist"
-						class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-						data-tip="Homepage"
-					>
-						<ClipboardList fill="none" stroke-width="2" class="size-5"></ClipboardList>
-						<span class="is-drawer-close:hidden">Todo List</span>
-					</a>
-				</li>
-
-				<li>
-					<a
-						href=""
-						class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-						data-tip="Settings"
-					>
-						<ClipboardList fill="none" stroke-width="2" class="size-5"></ClipboardList>
-
-						<span class="is-drawer-close:hidden">Settings</span>
-					</a>
-				</li>
+			<ul class="menu mt-6 w-full grow space-y-3 p-4">
+				{#each menuItems as item (item.name)}
+					{@const Icon = item.icon}
+					<li>
+						<a
+							href={item.href}
+							class="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+							data-tip={item.name}
+						>
+							<Icon fill="none" stroke-width="2" class="size-5" />
+							<span class="is-drawer-close:hidden">{item.name}</span>
+						</a>
+					</li>
+				{/each}
 			</ul>
 
 			<div class="is-drawer-close:tooltip is-drawer-close:tooltip-right m-2" data-tip="Open">
