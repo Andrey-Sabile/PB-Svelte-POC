@@ -12,6 +12,7 @@
 		BookOpen,
 		BookUser,
 		Calendar,
+		BookImage,
 		type Icon as IconType
 	} from '@lucide/svelte';
 
@@ -24,7 +25,7 @@
 	const menuItems: MenuItem[] = [
 		{
 			name: 'Home',
-			href: '',
+			href: 'home',
 			icon: House
 		},
 		{
@@ -46,6 +47,11 @@
 			name: 'Todo',
 			href: 'todolist',
 			icon: ClipboardList
+		},
+		{
+			name: 'Catalogue',
+			href: 'catalogue',
+			icon: BookImage
 		}
 	];
 
@@ -75,7 +81,7 @@
 
 <div class="drawer drawer-open">
 	<input id="app-drawer" type="checkbox" class="drawer-toggle" />
-	<div class="drawer-content">
+	<div class="drawer-content p-8">
 		{@render children()}
 	</div>
 
