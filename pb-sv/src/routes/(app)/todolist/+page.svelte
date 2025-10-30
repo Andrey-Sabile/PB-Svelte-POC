@@ -1,15 +1,11 @@
 <script lang="ts">
-	import { authState } from '$lib/stores/auth';
 	import type { TodoItemResponse, TodoListResponse } from '$lib/types/pocketbase';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	let user = $state($authState.user);
 	type TodoListWithItems = TodoListResponse<{ TodoItem?: TodoItemResponse[] }>;
-	const todos = (data.todoList?.items ?? []) as TodoListWithItems[];
+	const todos = $derived(data.todoList?.items ?? []) as TodoListWithItems[];
 </script>
-
-<h1>Hello {user?.firstName} {user?.lastName}</h1>
 
 {#if todos.length}
 	<ul>
