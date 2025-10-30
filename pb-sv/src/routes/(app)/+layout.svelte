@@ -2,6 +2,7 @@
 	import pb, { clearPocketBaseAuth } from '$lib/pocketbase';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { authState } from '$lib/stores/auth';
 	import type { LayoutProps } from './$types';
 
@@ -10,7 +11,7 @@
 	onMount(() => {
 		const check = ({ isValid }: { isValid: boolean }) => {
 			if (!isValid) {
-				goto('/login');
+				goto(resolve('/login'));
 			}
 		};
 
@@ -23,7 +24,7 @@
 
 	const logout = async () => {
 		clearPocketBaseAuth();
-		await goto('/login');
+		await goto(resolve('/login'));
 	};
 
 	let { data, children }: LayoutProps = $props();

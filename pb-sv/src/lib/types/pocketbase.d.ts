@@ -6,6 +6,9 @@ import type PocketBase from 'pocketbase'
 import type { RecordService } from 'pocketbase'
 
 export enum Collections {
+	CalendarEvents = "CalendarEvents",
+	Classrooms = "Classrooms",
+	Subjects = "Subjects",
 	TodoItem = "TodoItem",
 	TodoList = "TodoList",
 	Authorigins = "_authOrigins",
@@ -43,6 +46,36 @@ export type AuthSystemFields<T = unknown> = {
 
 // Record types for each collection
 
+export type CalendarEventsRecord = {
+	created?: IsoDateString
+	description?: string
+	endTime?: IsoDateString
+	id: string
+	startTime?: IsoDateString
+	title: string
+	updated?: IsoDateString
+}
+
+export type ClassroomsRecord = {
+	Description?: string
+	Title?: string
+	created?: IsoDateString
+	id: string
+	students?: RecordIdString[]
+	subject?: RecordIdString
+	teachers?: RecordIdString[]
+	updated?: IsoDateString
+}
+
+export type SubjectsRecord = {
+	code?: string
+	created?: IsoDateString
+	description?: string
+	id: string
+	name?: string
+	updated?: IsoDateString
+}
+
 export enum TodoItemPriorityLevelOptions {
 	"E1" = "1",
 	"E2" = "2",
@@ -56,6 +89,7 @@ export type TodoItemRecord = {
 	created?: IsoDateString
 	id: string
 	updated?: IsoDateString
+	user?: RecordIdString
 }
 
 export enum TodoListColourOptions {
@@ -123,20 +157,31 @@ export type SuperusersRecord = {
 	verified?: boolean
 }
 
+export enum UsersUserTypeOptions {
+	"student" = "student",
+	"teacher" = "teacher",
+	"guardian" = "guardian",
+	"admin" = "admin",
+}
 export type UsersRecord = {
 	avatar?: string
 	created?: IsoDateString
 	email: string
 	emailVisibility?: boolean
+	firstName: string
 	id: string
-	name?: string
+	lastName: string
 	password: string
 	tokenKey: string
 	updated?: IsoDateString
+	userType: UsersUserTypeOptions
 	verified?: boolean
 }
 
 // Response types include system fields and match responses from the PocketBase API
+export type CalendarEventsResponse<Texpand = unknown> = Required<CalendarEventsRecord> & BaseSystemFields<Texpand>
+export type ClassroomsResponse<Texpand = unknown> = Required<ClassroomsRecord> & BaseSystemFields<Texpand>
+export type SubjectsResponse<Texpand = unknown> = Required<SubjectsRecord> & BaseSystemFields<Texpand>
 export type TodoItemResponse<Texpand = unknown> = Required<TodoItemRecord> & BaseSystemFields<Texpand>
 export type TodoListResponse<Texpand = unknown> = Required<TodoListRecord> & BaseSystemFields<Texpand>
 export type AuthoriginsResponse<Texpand = unknown> = Required<AuthoriginsRecord> & BaseSystemFields<Texpand>
@@ -149,6 +194,9 @@ export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSyste
 // Types containing all Records and Responses, useful for creating typing helper functions
 
 export type CollectionRecords = {
+	CalendarEvents: CalendarEventsRecord
+	Classrooms: ClassroomsRecord
+	Subjects: SubjectsRecord
 	TodoItem: TodoItemRecord
 	TodoList: TodoListRecord
 	_authOrigins: AuthoriginsRecord
@@ -160,6 +208,9 @@ export type CollectionRecords = {
 }
 
 export type CollectionResponses = {
+	CalendarEvents: CalendarEventsResponse
+	Classrooms: ClassroomsResponse
+	Subjects: SubjectsResponse
 	TodoItem: TodoItemResponse
 	TodoList: TodoListResponse
 	_authOrigins: AuthoriginsResponse
@@ -174,6 +225,9 @@ export type CollectionResponses = {
 // https://github.com/pocketbase/js-sdk#specify-typescript-definitions
 
 export type TypedPocketBase = PocketBase & {
+	collection(idOrName: 'CalendarEvents'): RecordService<CalendarEventsResponse>
+	collection(idOrName: 'Classrooms'): RecordService<ClassroomsResponse>
+	collection(idOrName: 'Subjects'): RecordService<SubjectsResponse>
 	collection(idOrName: 'TodoItem'): RecordService<TodoItemResponse>
 	collection(idOrName: 'TodoList'): RecordService<TodoListResponse>
 	collection(idOrName: '_authOrigins'): RecordService<AuthoriginsResponse>

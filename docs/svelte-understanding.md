@@ -9,3 +9,9 @@ SSG + SPA
 SSG
 
 SPA
+
+Svelte Kit
+Universal Load
+Load and fetch() in +page.js route files
+
+Can hard rerun load functions by using the invalidate() function. Which takes a url and re-runs any load functions that depend on it. (Runes - reactivity magic)
