@@ -4,7 +4,6 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"predev": "npm run typegen &",
 		"predev:backend": "npm run typegen & cd ../backend && ./pocketbase serve --dev",
 		"dev": "concurrently 'npm run predev:backend' 'vite dev'",
 		"prebuild": "npm run typegen",

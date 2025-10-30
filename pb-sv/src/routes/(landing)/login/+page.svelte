@@ -1,18 +1,19 @@
 <script lang="ts">
-	import pb from '$lib/pocketbase';
 	import { goto } from '$app/navigation';
+	import { loginUser } from '$lib/stores/auth';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let form = $state({ email: '', password: '', error: '' });
 	let loading = $state(false);
 
-	const login = async () => {
+	const handleLogin = async (event: SubmitEvent) => {
+		event.preventDefault();
 		form.error = '';
 		loading = true;
 
 		try {
-			await pb.collection('users').authWithPassword(form.email, form.password);
+			await loginUser(form.email, form.password);
 			await goto('/todolist');
 		} catch (error) {
 			form.error = 'Invalid email or password';
@@ -23,7 +24,7 @@
 </script>
 
 <!--Create a Login Page Form-->
-<form onsubmit={login}>
+<form onsubmit={handleLogin}>
 	<label class="form-control">
 		<input type="email" bind:value={form.email} required />
 	</label>

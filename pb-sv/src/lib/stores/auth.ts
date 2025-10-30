@@ -1,6 +1,7 @@
 import type { UsersResponse } from "$lib/types/pocketbase";
 import pb from '$lib/pocketbase';
 import { writable } from "svelte/store";
+import { goto } from "$app/navigation";
 
 type AuthState = {
     isValid: boolean;
@@ -20,3 +21,7 @@ pb.authStore.onChange(() => {
         user: (pb.authStore.record as UsersResponse) ?? null
     });
 });
+
+export async function loginUser(email: string, password: string) {
+    await pb.collection("users").authWithPassword(email, password);
+}
