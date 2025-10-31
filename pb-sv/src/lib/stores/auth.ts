@@ -1,7 +1,6 @@
-import type { UsersResponse } from "$lib/types/pocketbase";
+import type { UsersResponse } from "$lib/types/pocketbase-types";
 import pb from '$lib/pocketbase';
 import { writable } from "svelte/store";
-import { goto } from "$app/navigation";
 
 type AuthState = {
     isValid: boolean;
