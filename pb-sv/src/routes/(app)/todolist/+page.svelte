@@ -124,7 +124,7 @@
 
 	<div class="card bg-base-100 overflow-y-auto shadow">
 		<ul class="card-body list gap-6">
-			<div class="card-title group min-h-12">
+			<div class="card-title group flex min-h-12">
 				<p>{selectedTodoList?.Title ?? ''}</p>
 				<button class="btn btn-ghost btn-circle hidden group-hover:flex" onclick={addTodoListItem}>
 					<Plus fill="none" stroke-width="2" class="size-5" />

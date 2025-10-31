@@ -4,7 +4,7 @@
 	let { data, children }: LayoutProps = $props();
 </script>
 
-<header class="navbar bg-base-100 border-base-300 shadow-sm">
+<header class="navbar bg-base-100 border-base-300">
 	<div class="flex-1"><a class="btn btn-ghost text-xl" href="/">Leo</a></div>
 	<div class="flex-none">
 		<ul class="menu menu-horizontal px-1">
