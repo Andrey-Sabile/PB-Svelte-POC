@@ -4,6 +4,14 @@
     themes: mytheme --default;
 }
 
+.btn,
+.input,
+.select {
+    &:focus {
+        @apply outline-none;
+    }
+}
+
 @plugin "daisyui/theme" {
     name: "cupcake";
     default: true;

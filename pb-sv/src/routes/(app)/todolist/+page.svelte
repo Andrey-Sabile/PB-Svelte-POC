@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { TodoListWithItemsResponse } from './todoApi';
 	import type { PageProps } from './$types';
+	import { hoverFocus } from '$lib/actions/hoverFocus';
 	import { Plus } from '@lucide/svelte';
 	import {
 		Collections,
@@ -15,8 +16,10 @@
 	let todoList: TodoListWithItemsResponse[] = $state(data.todoList ?? []);
 	let showModal = $state(false);
 	let newTodoListTitle = $state('');
+	let showPlus = $state(false);
 
-	let selectedId = $state<string | null>(todoList[0]?.id ?? null);
+	let selectedId = $state<string | null>(data.todoList?.[0]?.id ?? null);
+
 	const selectedTodoList = $derived.by(() => {
 		if (!selectedId) return null;
 
@@ -56,6 +59,26 @@
 		selectedTodoList.expand.TodoItem_via_TodoList.unshift(createdItem);
 	};
 
+	const editItemToDone = async (item: TodoItemRecord) => {
+		if (!selectedId) return;
+		if (!selectedTodoList) return;
+
+		item.done = true;
+
+		const created = (await pb
+			.collection(Collections.TodoItem)
+			.update(item.id, item)) as TodoItemResponse;
+	};
+
+	const editItemNote = async (item: TodoItemRecord) => {
+		if (!selectedId) return;
+		if (!selectedTodoList) return;
+
+		const created = (await pb
+			.collection(Collections.TodoItem)
+			.update(item.id, item)) as TodoItemResponse;
+	};
+
 	const createTodoList = async (name: string) => {
 		if (!selectedTodoList) return;
 		const trimmedName = name.trim();
@@ -80,15 +103,23 @@
 <div class="grid h-[90vh] grid-cols-[1fr_2fr] gap-6 p-6">
 	<div class="card bg-base-100 shadow md:grid-cols-2">
 		<ul class="card-body list gap-6">
-			<div class="card-title">
+			<div
+				class="card-title min-h-12"
+				role="group"
+				{@attach hoverFocus((value) => (showPlus = value))}
+			>
 				<p>Todo Lists</p>
-				<button class="btn btn-ghost btn-circle" onclick={() => (showModal = true)}>
+				<button
+					class="btn btn-ghost btn-circle"
+					class:hidden={!showPlus}
+					onclick={() => (showModal = true)}
+				>
 					<Plus fill="none" stroke-width="2" class="size-5" />
 				</button>
 			</div>
 			{#each todoList as list (list.id)}
 				<button
-					class="list-row hover:bg-base-200 aria-pressed:bg-base-200 hover:cursor-pointer"
+					class="list-row hover:bg-base-200 aria-pressed:bg-base-200 h-12 overflow-auto"
 					aria-pressed={selectedId === list.id}
 					onclick={() => (selectedId = list.id)}
 				>
@@ -109,22 +140,14 @@
 
 			{#each selectedTodoList?.expand?.TodoItem_via_TodoList ?? [] as item (item.id)}
 				{#if item.done != true}
-					<li class="list-row hover:bg-base-200">
-						<input type="checkbox" class="checkbox" onclick={() => (item.done = true)} />
-						<p>{item.Note}</p>
-					</li>
-				{/if}
-			{/each}
-
-			<div class="card-title flex-row">
-				<p>Completed Task</p>
-			</div>
-
-			{#each selectedTodoList?.expand?.TodoItem_via_TodoList ?? [] as item (item.id)}
-				{#if item.done == true}
-					<li class="list-row hover:bg-base-200">
-						<input type="checkbox" checked class="checkbox" onclick={() => (item.done = false)} />
-						<p>{item.Note}</p>
+					<li class="list-row hover:bg-base-200 flex items-center">
+						<input type="checkbox" class="checkbox" onclick={() => editItemToDone(item)} />
+						<input
+							type="text"
+							class="input input-ghost w-full"
+							bind:value={item.Note}
+							onchange={() => editItemNote(item)}
+						/>
 					</li>
 				{/if}
 			{/each}
