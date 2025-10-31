@@ -23,18 +23,30 @@
 
 	type MotionSentiment = 'momentum' | 'steady' | 'attention';
 	type MotionKey = 'launches' | 'experiments';
-	type MotionSort = 'progress' | 'alphabetical';
-	type MotionPanel = {
-		id: string;
-		title: string;
-		summary: string;
-		signal: string;
-		progress: number;
-		lane: string;
-		sentiment: MotionSentiment;
-	};
+type MotionSort = 'progress' | 'alphabetical';
+type MotionPanel = {
+	id: string;
+	title: string;
+	summary: string;
+	signal: string;
+	progress: number;
+	lane: string;
+	sentiment: MotionSentiment;
+};
 
-	let pulseMode = $state<PulseKey>('adoption');
+type LoginMode = 'signin' | 'magic';
+type LoginFeedback = { type: 'error' | 'success'; message: string } | null;
+
+let loginMode = $state<LoginMode>('signin');
+let loginForm = $state({
+	email: '',
+	password: '',
+	remember: true
+});
+let loginLoading = $state(false);
+let loginFeedback = $state<LoginFeedback>(null);
+
+let pulseMode = $state<PulseKey>('adoption');
 	let showPulseGrid = $state(true);
 	let pulseSets: Record<PulseKey, PulsePanel[]> = {
 		adoption: [
@@ -250,12 +262,54 @@
 				? base.slice().sort((a, b) => b.progress - a.progress)
 				: base.slice().sort((a, b) => a.title.localeCompare(b.title));
 
-		motionTiles = sorted;
-	});
+	motionTiles = sorted;
+});
 
-	function setPulseMode(mode: PulseKey) {
-		pulseMode = mode;
+function toggleLoginMode(mode: LoginMode) {
+	if (loginMode === mode) {
+		return;
 	}
+
+	loginMode = mode;
+	loginFeedback = null;
+	loginForm.password = '';
+}
+
+async function handleLogin(event: SubmitEvent) {
+	event.preventDefault();
+	loginFeedback = null;
+
+	if (!loginForm.email) {
+		loginFeedback = { type: 'error', message: 'Add a workspace email to continue.' };
+		return;
+	}
+
+	if (loginMode === 'signin' && loginForm.password.length < 8) {
+		loginFeedback = { type: 'error', message: 'Use at least 8 characters for your password.' };
+		return;
+	}
+
+	loginLoading = true;
+	await new Promise((resolve) => setTimeout(resolve, 850));
+
+	loginFeedback =
+		loginMode === 'signin'
+			? {
+					type: 'success',
+					message: 'Welcome back. We are routing you to your workspace.'
+				}
+			: {
+					type: 'success',
+					message: 'Magic link sent. Check your inbox for quick access.'
+				};
+
+	loginLoading = false;
+	loginForm.password = '';
+}
+
+function setPulseMode(mode: PulseKey) {
+	pulseMode = mode;
+}
 
 	function togglePulse() {
 		showPulseGrid = !showPulseGrid;
@@ -298,6 +352,147 @@
 		<p class="text-base-content/70">
 			Grid-focused layout inspirations leveraging Tailwind CSS and DaisyUI.
 		</p>
+	</section>
+
+	<section class="space-y-10">
+		<div
+			class="rounded-box relative overflow-hidden bg-gradient-to-br from-base-200 via-base-100 to-base-300 p-6 sm:p-10"
+		>
+			<div
+				class="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 translate-x-10 bg-gradient-to-l from-primary/10 via-transparent to-transparent blur-3xl lg:block"
+			></div>
+			<div
+				class="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-center"
+			>
+				<div class="space-y-6">
+					<div class="badge badge-outline badge-primary badge-lg">Workspace Access</div>
+					<h2 class="text-base-content text-3xl font-bold tracking-tight sm:text-4xl">
+						Sign in to your team command center
+					</h2>
+					<p class="text-base-content/70 text-base">
+						Join live projects, track momentum, and stay synced with the latest launches in seconds.
+					</p>
+					<div class="grid gap-4 sm:grid-cols-2">
+						<div class="rounded-box border border-base-300 bg-base-100/80 p-4 shadow-sm backdrop-blur">
+							<h3 class="text-base-content text-base font-semibold">Enterprise ready</h3>
+							<p class="text-base-content/70 text-sm">
+								SSO, device handoff, and adaptive security controls keep every login seamless.
+							</p>
+						</div>
+						<div class="rounded-box border border-base-300 bg-base-100/80 p-4 shadow-sm backdrop-blur">
+							<h3 class="text-base-content text-base font-semibold">Always synced</h3>
+							<p class="text-base-content/70 text-sm">
+								Magic links and password sessions stay in rhythm with your workspace cadence.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="card bg-base-100 shadow-2xl">
+					<div class="card-body gap-6">
+						<header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+							<div class="space-y-1">
+								<h3 class="text-base-content text-xl font-semibold">Member Access</h3>
+								<p class="text-base-content/60 text-sm">
+									Choose a secure path back into the workspace.
+								</p>
+							</div>
+							<div class="join">
+								<button
+									type="button"
+									class="btn btn-sm join-item"
+									class:btn-primary={loginMode === 'signin'}
+									class:btn-outline={loginMode !== 'signin'}
+									onclick={() => toggleLoginMode('signin')}
+								>
+									Password
+								</button>
+								<button
+									type="button"
+									class="btn btn-sm join-item"
+									class:btn-primary={loginMode === 'magic'}
+									class:btn-outline={loginMode !== 'magic'}
+									onclick={() => toggleLoginMode('magic')}
+								>
+									Magic link
+								</button>
+							</div>
+						</header>
+						<form class="grid gap-4" onsubmit={handleLogin}>
+							<label class="form-control w-full">
+								<div class="label">
+									<span class="label-text">Work email</span>
+								</div>
+								<input
+									required
+									type="email"
+									placeholder="alex@workspace.com"
+									class="input input-bordered input-primary w-full"
+									bind:value={loginForm.email}
+								/>
+							</label>
+							{#if loginMode === 'signin'}
+								<label class="form-control w-full" in:fade>
+									<div class="label">
+										<span class="label-text">Password</span>
+										<span class="label-text-alt">
+											<a class="link link-hover text-primary" href="/forgot-password">Forgot?</a>
+										</span>
+									</div>
+									<input
+										type="password"
+										placeholder="Enter your password"
+										class="input input-bordered w-full"
+										minlength={8}
+										bind:value={loginForm.password}
+									/>
+								</label>
+								<label class="label cursor-pointer justify-start gap-3 rounded-box bg-base-200/60 px-4 py-3">
+									<input
+										type="checkbox"
+										class="checkbox checkbox-primary"
+										bind:checked={loginForm.remember}
+									/>
+									<span class="label-text text-sm text-base-content/80">
+										Keep me signed in on this device
+									</span>
+								</label>
+							{:else}
+								<div
+									class="rounded-box border border-dashed border-base-300 bg-base-200/60 p-4 text-sm text-base-content/70"
+									in:fade
+								>
+									Instant access without a password. We will email you a one-time link that lasts 15
+									minutes.
+								</div>
+							{/if}
+							{#if loginFeedback}
+								<div
+									class={`alert ${loginFeedback.type === 'error' ? 'alert-error' : 'alert-success'} shadow-sm`}
+									in:fade
+								>
+									<span>{loginFeedback.message}</span>
+								</div>
+							{/if}
+							<button
+								type="submit"
+								class="btn btn-primary w-full"
+								class:loading={loginLoading}
+								disabled={loginLoading}
+							>
+								{loginMode === 'signin' ? 'Sign in' : 'Send magic link'}
+							</button>
+						</form>
+						<div class="divider">or</div>
+						<div class="grid gap-3">
+							<button class="btn btn-outline btn-neutral w-full">
+								Continue with company SSO
+							</button>
+							<button class="btn btn-ghost w-full">Use device passkey</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 
 	<section class="space-y-6">
@@ -389,7 +584,7 @@
 							Create adaptable storytelling frameworks that scale across markets while preserving
 							brand authenticity and measurable impact.
 						</p>
-						<button class="btn btn-primary btn-sm w-full sm:w-auto">Read the Playbook</button>
+						<button class="btn btn-neutral btn-sm w-full sm:w-auto">Read the Playbook</button>
 					</div>
 				</div>
 			</article>
@@ -444,9 +639,9 @@
 					<h3 class="text-base-content text-lg font-semibold">Avery Kim</h3>
 					<p class="text-base-content/60 text-sm">Product Design Lead</p>
 					<div class="text-base-content/70 grid grid-cols-3 gap-2 text-xs">
-						<span class="bg-primary/10 text-primary rounded-full px-3 py-1">UX</span>
-						<span class="bg-secondary/10 text-secondary rounded-full px-3 py-1">UI</span>
-						<span class="bg-accent/10 text-accent rounded-full px-3 py-1">Systems</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">UX</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">UI</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Systems</span>
 					</div>
 				</div>
 			</article>
@@ -463,9 +658,9 @@
 					<h3 class="text-base-content text-lg font-semibold">Maya Cooper</h3>
 					<p class="text-base-content/60 text-sm">Brand Strategist</p>
 					<div class="text-base-content/70 grid grid-cols-3 gap-2 text-xs">
-						<span class="bg-primary/10 text-primary rounded-full px-3 py-1">Research</span>
-						<span class="bg-secondary/10 text-secondary rounded-full px-3 py-1">Positioning</span>
-						<span class="bg-accent/10 text-accent rounded-full px-3 py-1">Writing</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Research</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Positioning</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Writing</span>
 					</div>
 				</div>
 			</article>
@@ -482,9 +677,9 @@
 					<h3 class="text-base-content text-lg font-semibold">Jordan Blake</h3>
 					<p class="text-base-content/60 text-sm">Engineering Manager</p>
 					<div class="text-base-content/70 grid grid-cols-3 gap-2 text-xs">
-						<span class="bg-primary/10 text-primary rounded-full px-3 py-1">APIs</span>
-						<span class="bg-secondary/10 text-secondary rounded-full px-3 py-1">Security</span>
-						<span class="bg-accent/10 text-accent rounded-full px-3 py-1">Delivery</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">APIs</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Security</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Delivery</span>
 					</div>
 				</div>
 			</article>
@@ -501,9 +696,9 @@
 					<h3 class="text-base-content text-lg font-semibold">Leia Howard</h3>
 					<p class="text-base-content/60 text-sm">Customer Success</p>
 					<div class="text-base-content/70 grid grid-cols-3 gap-2 text-xs">
-						<span class="bg-primary/10 text-primary rounded-full px-3 py-1">Onboarding</span>
-						<span class="bg-secondary/10 text-secondary rounded-full px-3 py-1">Insights</span>
-						<span class="bg-accent/10 text-accent rounded-full px-3 py-1">Retention</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Onboarding</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Insights</span>
+						<span class="bg-base-300 rounded-full px-3 py-1">Retention</span>
 					</div>
 				</div>
 			</article>

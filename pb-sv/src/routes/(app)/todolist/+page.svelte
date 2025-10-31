@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { TodoListWithItemsResponse } from './todoApi';
 	import type { PageProps } from './$types';
-	import { hoverFocus } from '$lib/actions/hoverFocus';
 	import { Plus } from '@lucide/svelte';
 	import {
 		Collections,
@@ -16,7 +15,6 @@
 	let todoList: TodoListWithItemsResponse[] = $state(data.todoList ?? []);
 	let showModal = $state(false);
 	let newTodoListTitle = $state('');
-	let showPlus = $state(false);
 
 	let selectedId = $state<string | null>(data.todoList?.[0]?.id ?? null);
 
@@ -103,15 +101,10 @@
 <div class="grid h-[90vh] grid-cols-[1fr_2fr] gap-6 p-6">
 	<div class="card bg-base-100 shadow md:grid-cols-2">
 		<ul class="card-body list gap-6">
-			<div
-				class="card-title min-h-12"
-				role="group"
-				{@attach hoverFocus((value) => (showPlus = value))}
-			>
+			<div class="card-title group min-h-12">
 				<p>Todo Lists</p>
 				<button
-					class="btn btn-ghost btn-circle"
-					class:hidden={!showPlus}
+					class="btn btn-ghost btn-circle hidden group-hover:flex"
 					onclick={() => (showModal = true)}
 				>
 					<Plus fill="none" stroke-width="2" class="size-5" />
@@ -131,9 +124,9 @@
 
 	<div class="card bg-base-100 overflow-y-auto shadow">
 		<ul class="card-body list gap-6">
-			<div class="card-title">
+			<div class="card-title group min-h-12">
 				<p>{selectedTodoList?.Title ?? ''}</p>
-				<button class="btn btn-ghost btn-circle" onclick={addTodoListItem}>
+				<button class="btn btn-ghost btn-circle hidden group-hover:flex" onclick={addTodoListItem}>
 					<Plus fill="none" stroke-width="2" class="size-5" />
 				</button>
 			</div>
