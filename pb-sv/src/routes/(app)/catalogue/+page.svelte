@@ -1,3 +1,297 @@
+<script lang="ts">
+	import { fade, fly, scale, slide } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
+
+	type PulseKey = 'adoption' | 'retention';
+	type PulsePanel = {
+		id: string;
+		title: string;
+		summary: string;
+		metric: string;
+		delta: string;
+		emphasis: 'primary' | 'secondary' | 'accent' | 'info';
+	};
+
+	type Initiative = {
+		id: string;
+		title: string;
+		owner: string;
+		impact: number;
+		effort: number;
+		focus: 'Now' | 'Next' | 'Later';
+	};
+
+	type MotionSentiment = 'momentum' | 'steady' | 'attention';
+	type MotionKey = 'launches' | 'experiments';
+	type MotionSort = 'progress' | 'alphabetical';
+	type MotionPanel = {
+		id: string;
+		title: string;
+		summary: string;
+		signal: string;
+		progress: number;
+		lane: string;
+		sentiment: MotionSentiment;
+	};
+
+	let pulseMode = $state<PulseKey>('adoption');
+	let showPulseGrid = $state(true);
+	let pulseSets: Record<PulseKey, PulsePanel[]> = {
+		adoption: [
+			{
+				id: 'welcome-series',
+				title: 'Welcome Series',
+				summary: 'Automations deliver tailored walkthroughs within 24 hours.',
+				metric: '82% completion',
+				delta: '▲ 6% vs last sprint',
+				emphasis: 'primary'
+			},
+			{
+				id: 'workspace-health',
+				title: 'Workspace Health',
+				summary: 'Teams activating templates within seven days of signup.',
+				metric: '74% active',
+				delta: '▲ 4% uplift',
+				emphasis: 'accent'
+			},
+			{
+				id: 'pilot-handoff',
+				title: 'Pilot Handoff',
+				summary: 'Customer success touches delivered with contextual playbooks.',
+				metric: '31 hr turnaround',
+				delta: '▼ 5 hrs faster',
+				emphasis: 'info'
+			},
+			{
+				id: 'advocacy-loop',
+				title: 'Advocacy Loop',
+				summary: 'New champions invited to peer cohorts after week three.',
+				metric: '58 invites',
+				delta: '▲ 12 new voices',
+				emphasis: 'secondary'
+			}
+		],
+		retention: [
+			{
+				id: 'adoption-review',
+				title: 'Adoption Review',
+				summary: 'Quarterly product councils aligned on roadmap checkpoints.',
+				metric: '92% attendance',
+				delta: '▲ 8% engagement',
+				emphasis: 'accent'
+			},
+			{
+				id: 'change-log',
+				title: 'Change Log Broadcasts',
+				summary: 'Release notes personalized by segment and sent in-product.',
+				metric: '68% read-through',
+				delta: '▲ 10% uplift',
+				emphasis: 'primary'
+			},
+			{
+				id: 'insight-forum',
+				title: 'Insight Forum',
+				summary: 'Advisory board shares quarterly impact stories across orgs.',
+				metric: '21 case studies',
+				delta: '▲ 5 launches',
+				emphasis: 'secondary'
+			},
+			{
+				id: 'renewal-signal',
+				title: 'Renewal Signal',
+				summary: 'Health scores recalculated weekly for revenue planning.',
+				metric: '88% stable',
+				delta: '▲ 3% lift',
+				emphasis: 'info'
+			}
+		]
+	};
+
+	let initiativeSort = $state<'impact' | 'effort'>('impact');
+	const initiatives = $state<Initiative[]>([
+		{
+			id: 'playbook-refine',
+			title: 'Playbook Refinement',
+			owner: 'Leah Sands',
+			impact: 9,
+			effort: 3,
+			focus: 'Now'
+		},
+		{
+			id: 'partner-launch',
+			title: 'Partner Launch Program',
+			owner: 'Hugo Wren',
+			impact: 8,
+			effort: 5,
+			focus: 'Next'
+		},
+		{
+			id: 'data-sandbox',
+			title: 'Customer Data Sandbox',
+			owner: 'Morgan Patel',
+			impact: 7,
+			effort: 4,
+			focus: 'Now'
+		},
+		{
+			id: 'leadership-summit',
+			title: 'Leadership Summit',
+			owner: 'Priya Roy',
+			impact: 6,
+			effort: 6,
+			focus: 'Later'
+		},
+		{
+			id: 'role-based-training',
+			title: 'Role-Based Training Paths',
+			owner: 'Daniel Cho',
+			impact: 8,
+			effort: 4,
+			focus: 'Next'
+		},
+		{
+			id: 'signal-automation',
+			title: 'Signal Automation',
+			owner: 'Ivy Chen',
+			impact: 9,
+			effort: 5,
+			focus: 'Now'
+		}
+	]);
+
+	const motionSets: Record<MotionKey, MotionPanel[]> = {
+		launches: [
+			{
+				id: 'launchpad',
+				title: 'Lifecycle Launchpad',
+				summary: 'Sequenced nudges align first-week value moments for new workspaces.',
+				signal: '▲ 12% activation',
+				progress: 78,
+				lane: 'Lifecycle',
+				sentiment: 'momentum'
+			},
+			{
+				id: 'advocate-hub',
+				title: 'Advocacy Hub',
+				summary: 'Champions share reusable win stories through moderated cohorts.',
+				signal: '▲ 18 new advocates',
+				progress: 64,
+				lane: 'Advocacy',
+				sentiment: 'steady'
+			},
+			{
+				id: 'pilot-bridge',
+				title: 'Pilot Bridge',
+				summary: 'Implementation kits bundle playbooks, enablement, and metrics dashboards.',
+				signal: '▲ 9 pt CSAT swing',
+				progress: 82,
+				lane: 'Enablement',
+				sentiment: 'momentum'
+			},
+			{
+				id: 'signal-drift',
+				title: 'Signal Drift Guard',
+				summary: 'Revenue alerts flag idle teams for success handoffs with automated play.',
+				signal: '▼ 6 churn signals',
+				progress: 55,
+				lane: 'Revenue',
+				sentiment: 'attention'
+			}
+		],
+		experiments: [
+			{
+				id: 'immersive-demo',
+				title: 'Immersive Demo Rooms',
+				summary: 'Spatial walkthroughs remix feature tours into narrative-rich journeys.',
+				signal: '▲ 24% dwell time',
+				progress: 47,
+				lane: 'Product Marketing',
+				sentiment: 'steady'
+			},
+			{
+				id: 'cohort-labs',
+				title: 'Cohort Labs',
+				summary: 'Research pods pair product, design, and ops to prototype weekly.',
+				signal: '▲ 3 validated bets',
+				progress: 69,
+				lane: 'Research',
+				sentiment: 'momentum'
+			},
+			{
+				id: 'microsurvey-haze',
+				title: 'Microsurvey Haze',
+				summary: 'In-app microcopy tests capture contextual sentiment mid-feature.',
+				signal: '▼ 4 friction points',
+				progress: 58,
+				lane: 'Insights',
+				sentiment: 'attention'
+			},
+			{
+				id: 'retention-loop',
+				title: 'Retention Loop Stories',
+				summary: 'Narrative snippets capture before-and-after moments for exec recaps.',
+				signal: '▲ 11 executive shares',
+				progress: 62,
+				lane: 'Communications',
+				sentiment: 'steady'
+			}
+		]
+	};
+
+	let motionView = $state<MotionKey>('launches');
+	let motionSort = $state<MotionSort>('progress');
+	let revealMotionGrid = $state(true);
+	let motionTiles = $state<MotionPanel[]>([]);
+
+	$effect(() => {
+		const base = motionSets[motionView];
+		const sorted =
+			motionSort === 'progress'
+				? base.slice().sort((a, b) => b.progress - a.progress)
+				: base.slice().sort((a, b) => a.title.localeCompare(b.title));
+
+		motionTiles = sorted;
+	});
+
+	function setPulseMode(mode: PulseKey) {
+		pulseMode = mode;
+	}
+
+	function togglePulse() {
+		showPulseGrid = !showPulseGrid;
+	}
+
+	function resort(mode: 'impact' | 'effort') {
+		if (initiativeSort === mode) {
+			initiatives.reverse();
+		} else {
+			initiatives.sort((a, b) => (mode === 'impact' ? b.impact - a.impact : a.effort - b.effort));
+			initiativeSort = mode;
+		}
+	}
+
+	function setMotionView(view: MotionKey) {
+		if (motionView === view) {
+			return;
+		}
+
+		motionView = view;
+	}
+
+	function toggleMotionGrid() {
+		revealMotionGrid = !revealMotionGrid;
+	}
+
+	function sortMotion(mode: MotionSort) {
+		if (motionSort === mode) {
+			motionTiles = motionTiles.slice().reverse();
+			return;
+		}
+
+		motionSort = mode;
+	}
+</script>
+
 <main class="space-y-16">
 	<section class="space-y-6">
 		<h1 class="text-base-content text-3xl font-bold tracking-tight">Grid Pattern Catalogue</h1>
@@ -503,6 +797,130 @@
 	</section>
 
 	<section class="space-y-6">
+		<h2 class="text-base-content text-2xl font-semibold">Interactive Engagement Grid</h2>
+		<div class="card bg-base-100 shadow">
+			<div class="card-body space-y-6">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div class="btn-group">
+						<button
+							class="btn btn-sm btn-outline"
+							class:btn-active={pulseMode === 'adoption'}
+							onclick={() => setPulseMode('adoption')}
+						>
+							New Adoption
+						</button>
+						<button
+							class="btn btn-sm btn-outline"
+							class:btn-active={pulseMode === 'retention'}
+							onclick={() => setPulseMode('retention')}
+						>
+							Retention Cycles
+						</button>
+					</div>
+					<button class="btn btn-sm btn-ghost" onclick={togglePulse}>
+						{showPulseGrid ? 'Hide Highlights' : 'Show Highlights'}
+					</button>
+				</div>
+				{#if showPulseGrid}
+					{#key pulseMode}
+						<div
+							class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
+							transition:fade={{ duration: 200 }}
+						>
+							{#each pulseSets[pulseMode] as panel (panel.id)}
+								<article
+									class="card bg-base-200 shadow-sm"
+									in:fly={{ y: 24, duration: 220 }}
+									out:fade={{ duration: 160 }}
+								>
+									<div class="card-body gap-4">
+										<div class="badge badge-outline badge-{panel.emphasis} w-fit">
+											{panel.metric}
+										</div>
+										<h3 class="text-base-content text-lg font-semibold">{panel.title}</h3>
+										<p class="text-base-content/70 text-sm leading-relaxed">{panel.summary}</p>
+										<span class="text-base-content/80 text-xs uppercase tracking-wide"
+											>{panel.delta}</span
+										>
+									</div>
+								</article>
+							{/each}
+						</div>
+					{/key}
+				{/if}
+			</div>
+		</div>
+	</section>
+
+	<section class="space-y-6">
+		<h2 class="text-base-content text-2xl font-semibold">Sortable Initiative Grid</h2>
+		<div class="card bg-base-100 shadow">
+			<div class="card-body space-y-6">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div class="btn-group">
+						<button
+							class="btn btn-sm btn-outline"
+							class:btn-active={initiativeSort === 'impact'}
+							onclick={() => resort('impact')}
+						>
+							Impact First
+						</button>
+						<button
+							class="btn btn-sm btn-outline"
+							class:btn-active={initiativeSort === 'effort'}
+							onclick={() => resort('effort')}
+						>
+							Effort First
+						</button>
+					</div>
+					<div class="badge badge-outline badge-primary">Order updates animate with flip</div>
+				</div>
+				<div class="grid gap-5 lg:grid-cols-3">
+					{#each initiatives as initiative (initiative.id)}
+						<article class="card bg-base-200 shadow-sm" animate:flip>
+							<div class="card-body gap-4">
+								<div class="flex items-center justify-between">
+									<h3 class="text-base-content text-lg font-semibold">{initiative.title}</h3>
+									<div class="badge badge-outline badge-secondary">{initiative.focus}</div>
+								</div>
+								<p class="text-base-content/70 text-sm">Owned by {initiative.owner}</p>
+								<div class="space-y-3">
+									<div class="grid gap-1">
+										<div class="text-base-content/60 flex items-center justify-between text-xs">
+											<span>Impact</span>
+											<span class="text-base-content font-semibold">{initiative.impact}/10</span>
+										</div>
+										<progress
+											class="progress progress-primary"
+											value={initiative.impact * 10}
+											max="100"
+										></progress>
+									</div>
+									<div class="grid gap-1">
+										<div class="text-base-content/60 flex items-center justify-between text-xs">
+											<span>Effort</span>
+											<span class="text-base-content font-semibold">{initiative.effort}/10</span>
+										</div>
+										<progress
+											class="progress progress-accent"
+											value={initiative.effort * 10}
+											max="100"
+										></progress>
+									</div>
+								</div>
+								<div class="text-base-content/60 grid gap-2 text-xs">
+									<span>Reprioritize by selecting a new lens above.</span>
+									<span class="text-base-content/80">Motion courtesy of animate:flip.</span>
+								</div>
+							</div>
+						</article>
+					{/each}
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="space-y-6">
 		<h2 class="text-base-content text-2xl font-semibold">Visual Storytelling Grid</h2>
 		<div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-4">
 			<figure class="card image-full sm:col-span-2">
@@ -607,6 +1025,110 @@
 					<button class="btn btn-primary btn-sm">Reserve a Seat</button>
 				</div>
 			</aside>
+		</div>
+	</section>
+
+	<section class="space-y-6">
+		<h2 class="text-base-content text-2xl font-semibold">Motion Patterns Lab</h2>
+		<div class="card bg-base-100 shadow">
+			<div class="card-body space-y-6">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div class="btn-group">
+						<button
+							class="btn btn-sm btn-outline"
+							class:btn-active={motionView === 'launches'}
+							onclick={() => setMotionView('launches')}
+						>
+							Launch Programs
+						</button>
+						<button
+							class="btn btn-sm btn-outline"
+							class:btn-active={motionView === 'experiments'}
+							onclick={() => setMotionView('experiments')}
+						>
+							Experiment Queue
+						</button>
+					</div>
+					<div class="flex flex-wrap items-center gap-3">
+						<div class="join">
+							<button
+								class="btn join-item btn-sm btn-outline"
+								class:btn-active={motionSort === 'progress'}
+								onclick={() => sortMotion('progress')}
+							>
+								Momentum
+							</button>
+							<button
+								class="btn join-item btn-sm btn-outline"
+								class:btn-active={motionSort === 'alphabetical'}
+								onclick={() => sortMotion('alphabetical')}
+							>
+								A–Z
+							</button>
+						</div>
+						<button class="btn btn-sm btn-ghost" onclick={toggleMotionGrid}>
+							{revealMotionGrid ? 'Collapse Grid' : 'Expand Grid'}
+						</button>
+					</div>
+				</div>
+				{#if revealMotionGrid}
+					<div transition:slide={{ duration: 180 }}>
+						{#key motionView + ':' + motionSort}
+							<div
+								class="grid gap-5 md:grid-cols-2 xl:grid-cols-4"
+								transition:fade={{ duration: 160 }}
+							>
+								{#each motionTiles as tile (tile.id)}
+									<article
+										class="card bg-base-200 border-base-300 border shadow-sm"
+										transition:scale={{ duration: 220, start: 0.9 }}
+										animate:flip={{ duration: 220 }}
+									>
+										<div class="card-body gap-4">
+											<div class="flex items-center justify-between">
+												<div class="badge badge-outline badge-primary">{tile.lane}</div>
+												<div
+													class="badge badge-outline"
+													class:badge-success={tile.sentiment === 'momentum'}
+													class:badge-info={tile.sentiment === 'steady'}
+													class:badge-warning={tile.sentiment === 'attention'}
+												>
+													{tile.signal}
+												</div>
+											</div>
+											<h3 class="text-base-content text-lg font-semibold leading-tight">
+												{tile.title}
+											</h3>
+											<p class="text-base-content/70 text-sm leading-relaxed">{tile.summary}</p>
+											<div class="grid gap-1">
+												<div class="text-base-content/60 flex items-center justify-between text-xs">
+													<span>Rollout progress</span>
+													<span class="text-base-content font-semibold">{tile.progress}%</span>
+												</div>
+												<progress
+													class="progress"
+													class:progress-success={tile.sentiment === 'momentum'}
+													class:progress-info={tile.sentiment === 'steady'}
+													class:progress-warning={tile.sentiment === 'attention'}
+													value={tile.progress}
+													max="100"
+												></progress>
+											</div>
+											<div class="text-base-content/60 text-xs">
+												Switch views or resort to watch animate:flip remap the grid.
+											</div>
+										</div>
+									</article>
+								{/each}
+							</div>
+						{/key}
+					</div>
+				{:else}
+					<div class="rounded-box bg-base-200 text-base-content/70 p-6 text-center" transition:fade>
+						Grid transitions paused — reopen to replay the motion study.
+					</div>
+				{/if}
+			</div>
 		</div>
 	</section>
 </main>

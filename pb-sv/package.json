@@ -17,7 +17,7 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"typegen": "pocketbase-typegen --db ../backend/pb_data/data.db --out ./src/lib/types/pocketbase.d.ts",
+		"typegen": "pocketbase-typegen --db ../backend/pb_data/data.db --out ./src/lib/types/pocketbase-types.ts",
 		"deploy:static": "bash -lc 'set -euo pipefail; mkdir -p ../backend/pb_public; find ../backend/pb_public -mindepth 1 -maxdepth 1 -exec rm -rf {} +; cp -R build/. ../backend/pb_public/'"
 	},
 	"devDependencies": {

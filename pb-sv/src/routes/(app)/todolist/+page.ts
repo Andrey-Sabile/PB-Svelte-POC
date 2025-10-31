@@ -1,10 +1,8 @@
 import type { PageLoad } from './$types';
-import pb from '$lib/pocketbase';
+import { getTodoListWithItems } from './todoApi';
 
-export const load: PageLoad = (async () => {
-    const todoList = await pb.collection('TodoList').getList(1, 50, {
-        expand: 'TodoItem'
-    });
+export const load: PageLoad = async () => {
+    const todoList = await getTodoListWithItems();
 
     return { todoList };
-});
+};

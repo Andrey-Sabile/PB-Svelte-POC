@@ -87,6 +87,7 @@ export type TodoItemRecord = {
 	Title?: string
 	TodoList?: RecordIdString
 	created?: IsoDateString
+	done?: boolean
 	id: string
 	updated?: IsoDateString
 	user?: RecordIdString

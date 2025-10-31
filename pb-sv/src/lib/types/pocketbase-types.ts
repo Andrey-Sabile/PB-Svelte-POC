@@ -87,6 +87,7 @@ export type TodoItemRecord = {
 	Title?: string
 	TodoList?: RecordIdString
 	created?: IsoDateString
+	done?: boolean
 	id: string
 	updated?: IsoDateString
 	user?: RecordIdString
@@ -236,36 +237,4 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_otps'): RecordService<OtpsResponse>
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
-}
-
-export type Root = {
-	items: Array<{
-		Colour: string
-		Title: string
-		TodoItem: string[]
-		collectionId: string
-		collectionName: string
-		created: string
-		expand: {
-			TodoItem: Array<{
-				Note: string
-				PriorityLevel: string
-				Title: string
-				TodoList: string
-				collectionId: string
-				collectionName: string
-				created: string
-				id: string
-				updated: string
-				user: string
-			}>
-		}
-		id: string
-		updated: string
-		user: string
-	}>
-	page: number
-	perPage: number
-	totalItems: number
-	totalPages: number
 }
