@@ -26,8 +26,8 @@ export type HTMLString = string
 
 type ExpandType<T> = unknown extends T
 	? T extends unknown
-	? { expand?: unknown }
-	: { expand: T }
+		? { expand?: unknown }
+		: { expand: T }
 	: { expand: T }
 
 // System fields

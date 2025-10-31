@@ -1,20 +1,14 @@
 import pb from '$lib/pocketbase';
 import { Collections } from '$lib/types/pocketbase-types';
-import type { TodoListResponse, TodoItemResponse } from '$lib/types/pocketbase-types';
+import type { TodoListResponse, TodoItemResponse, TodoListRecord } from '$lib/types/pocketbase-types';
 
 type RecordIdString = string;
 type TodoListColourOptions = 'Red' | 'Blue' | 'Green' | 'Yellow';
 type TodoItemPriorityLevelOptions = '1' | '2' | '3';
 
 export type TodoListWithItemsResponse = TodoListResponse<{
-    TodoItem: TodoItemResponse[];
+    TodoItem_via_TodoList: TodoItemResponse[];
 }>;
-
-export type TodoListCreateInput = {
-    Title: string;
-    Colour?: TodoListColourOptions;
-    user?: RecordIdString;
-};
 
 export type TodoItemCreateInput = {
     Title: string;
@@ -37,7 +31,7 @@ export type TodoItemUpdateInput = {
 };
 
 //CREATE
-export const createTodoList = async (data: TodoListCreateInput) => {
+export const createTodoList = async (data: TodoListRecord) => {
     return pb.collection(Collections.TodoList).create(data);
 };
 
@@ -47,7 +41,9 @@ export const createTodoItem = async (data: TodoItemCreateInput) => {
 
 // READ
 export const getTodoListWithItems = async () => {
-    return pb.collection(Collections.TodoList).getFullList<TodoListWithItemsResponse>({ expand: 'TodoItem' });
+    return pb
+        .collection(Collections.TodoList)
+        .getFullList<TodoListWithItemsResponse>({ expand: 'TodoItem_via_TodoList' });
 };
 
 
