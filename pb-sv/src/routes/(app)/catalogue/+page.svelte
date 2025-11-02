@@ -23,30 +23,30 @@
 
 	type MotionSentiment = 'momentum' | 'steady' | 'attention';
 	type MotionKey = 'launches' | 'experiments';
-type MotionSort = 'progress' | 'alphabetical';
-type MotionPanel = {
-	id: string;
-	title: string;
-	summary: string;
-	signal: string;
-	progress: number;
-	lane: string;
-	sentiment: MotionSentiment;
-};
+	type MotionSort = 'progress' | 'alphabetical';
+	type MotionPanel = {
+		id: string;
+		title: string;
+		summary: string;
+		signal: string;
+		progress: number;
+		lane: string;
+		sentiment: MotionSentiment;
+	};
 
-type LoginMode = 'signin' | 'magic';
-type LoginFeedback = { type: 'error' | 'success'; message: string } | null;
+	type LoginMode = 'signin' | 'magic';
+	type LoginFeedback = { type: 'error' | 'success'; message: string } | null;
 
-let loginMode = $state<LoginMode>('signin');
-let loginForm = $state({
-	email: '',
-	password: '',
-	remember: true
-});
-let loginLoading = $state(false);
-let loginFeedback = $state<LoginFeedback>(null);
+	let loginMode = $state<LoginMode>('signin');
+	let loginForm = $state({
+		email: '',
+		password: '',
+		remember: true
+	});
+	let loginLoading = $state(false);
+	let loginFeedback = $state<LoginFeedback>(null);
 
-let pulseMode = $state<PulseKey>('adoption');
+	let pulseMode = $state<PulseKey>('adoption');
 	let showPulseGrid = $state(true);
 	let pulseSets: Record<PulseKey, PulsePanel[]> = {
 		adoption: [
@@ -262,54 +262,54 @@ let pulseMode = $state<PulseKey>('adoption');
 				? base.slice().sort((a, b) => b.progress - a.progress)
 				: base.slice().sort((a, b) => a.title.localeCompare(b.title));
 
-	motionTiles = sorted;
-});
+		motionTiles = sorted;
+	});
 
-function toggleLoginMode(mode: LoginMode) {
-	if (loginMode === mode) {
-		return;
+	function toggleLoginMode(mode: LoginMode) {
+		if (loginMode === mode) {
+			return;
+		}
+
+		loginMode = mode;
+		loginFeedback = null;
+		loginForm.password = '';
 	}
 
-	loginMode = mode;
-	loginFeedback = null;
-	loginForm.password = '';
-}
+	async function handleLogin(event: SubmitEvent) {
+		event.preventDefault();
+		loginFeedback = null;
 
-async function handleLogin(event: SubmitEvent) {
-	event.preventDefault();
-	loginFeedback = null;
+		if (!loginForm.email) {
+			loginFeedback = { type: 'error', message: 'Add a workspace email to continue.' };
+			return;
+		}
 
-	if (!loginForm.email) {
-		loginFeedback = { type: 'error', message: 'Add a workspace email to continue.' };
-		return;
+		if (loginMode === 'signin' && loginForm.password.length < 8) {
+			loginFeedback = { type: 'error', message: 'Use at least 8 characters for your password.' };
+			return;
+		}
+
+		loginLoading = true;
+		await new Promise((resolve) => setTimeout(resolve, 850));
+
+		loginFeedback =
+			loginMode === 'signin'
+				? {
+						type: 'success',
+						message: 'Welcome back. We are routing you to your workspace.'
+					}
+				: {
+						type: 'success',
+						message: 'Magic link sent. Check your inbox for quick access.'
+					};
+
+		loginLoading = false;
+		loginForm.password = '';
 	}
 
-	if (loginMode === 'signin' && loginForm.password.length < 8) {
-		loginFeedback = { type: 'error', message: 'Use at least 8 characters for your password.' };
-		return;
+	function setPulseMode(mode: PulseKey) {
+		pulseMode = mode;
 	}
-
-	loginLoading = true;
-	await new Promise((resolve) => setTimeout(resolve, 850));
-
-	loginFeedback =
-		loginMode === 'signin'
-			? {
-					type: 'success',
-					message: 'Welcome back. We are routing you to your workspace.'
-				}
-			: {
-					type: 'success',
-					message: 'Magic link sent. Check your inbox for quick access.'
-				};
-
-	loginLoading = false;
-	loginForm.password = '';
-}
-
-function setPulseMode(mode: PulseKey) {
-	pulseMode = mode;
-}
 
 	function togglePulse() {
 		showPulseGrid = !showPulseGrid;
@@ -348,7 +348,7 @@ function setPulseMode(mode: PulseKey) {
 
 <main class="space-y-16">
 	<section class="space-y-6">
-		<h1 class="text-base-content text-3xl font-bold tracking-tight">Grid Pattern Catalogue</h1>
+		<h1 class=" text-3xl font-bold tracking-tight">Grid Pattern Catalogue</h1>
 		<p class="text-base-content/70">
 			Grid-focused layout inspirations leveraging Tailwind CSS and DaisyUI.
 		</p>
@@ -356,10 +356,10 @@ function setPulseMode(mode: PulseKey) {
 
 	<section class="space-y-10">
 		<div
-			class="rounded-box relative overflow-hidden bg-gradient-to-br from-base-200 via-base-100 to-base-300 p-6 sm:p-10"
+			class="rounded-box from-base-200 via-base-100 to-base-300 relative overflow-hidden bg-gradient-to-br p-6 sm:p-10"
 		>
 			<div
-				class="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 translate-x-10 bg-gradient-to-l from-primary/10 via-transparent to-transparent blur-3xl lg:block"
+				class="from-primary/10 pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 translate-x-10 bg-gradient-to-l via-transparent to-transparent blur-3xl lg:block"
 			></div>
 			<div
 				class="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-center"
@@ -373,13 +373,17 @@ function setPulseMode(mode: PulseKey) {
 						Join live projects, track momentum, and stay synced with the latest launches in seconds.
 					</p>
 					<div class="grid gap-4 sm:grid-cols-2">
-						<div class="rounded-box border border-base-300 bg-base-100/80 p-4 shadow-sm backdrop-blur">
-							<h3 class="text-base-content text-base font-semibold">Enterprise ready</h3>
+						<div
+							class="rounded-box border-base-300 bg-base-100/80 border p-4 shadow-sm backdrop-blur"
+						>
+							<h3 class="font-semibold">Enterprise ready</h3>
 							<p class="text-base-content/70 text-sm">
 								SSO, device handoff, and adaptive security controls keep every login seamless.
 							</p>
 						</div>
-						<div class="rounded-box border border-base-300 bg-base-100/80 p-4 shadow-sm backdrop-blur">
+						<div
+							class="rounded-box border-base-300 bg-base-100/80 border p-4 shadow-sm backdrop-blur"
+						>
 							<h3 class="text-base-content text-base font-semibold">Always synced</h3>
 							<p class="text-base-content/70 text-sm">
 								Magic links and password sessions stay in rhythm with your workspace cadence.
@@ -446,19 +450,21 @@ function setPulseMode(mode: PulseKey) {
 										bind:value={loginForm.password}
 									/>
 								</label>
-								<label class="label cursor-pointer justify-start gap-3 rounded-box bg-base-200/60 px-4 py-3">
+								<label
+									class="label rounded-box bg-base-200/60 cursor-pointer justify-start gap-3 px-4 py-3"
+								>
 									<input
 										type="checkbox"
 										class="checkbox checkbox-primary"
 										bind:checked={loginForm.remember}
 									/>
-									<span class="label-text text-sm text-base-content/80">
+									<span class="label-text text-base-content/80 text-sm">
 										Keep me signed in on this device
 									</span>
 								</label>
 							{:else}
 								<div
-									class="rounded-box border border-dashed border-base-300 bg-base-200/60 p-4 text-sm text-base-content/70"
+									class="rounded-box border-base-300 bg-base-200/60 text-base-content/70 border border-dashed p-4 text-sm"
 									in:fade
 								>
 									Instant access without a password. We will email you a one-time link that lasts 15
