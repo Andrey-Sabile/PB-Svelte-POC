@@ -14,6 +14,7 @@
 		Calendar,
 		BookImage,
 		Cuboid,
+		NotepadText,
 		type Icon as IconType
 	} from '@lucide/svelte';
 	import Link from '$lib/navigation/Link.svelte';
@@ -34,6 +35,11 @@
 			name: 'Classes',
 			href: '/classes',
 			icon: BookOpen
+		},
+		{
+			name: 'Teaching Units',
+			href: '/units',
+			icon: NotepadText
 		},
 		{
 			name: 'Calendar',
@@ -86,7 +92,7 @@
 	let { data, children }: LayoutProps = $props();
 </script>
 
-<div class="drawer drawer-open">
+<div class="drawer-open drawer">
 	<input id="app-drawer" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content p-8">
 		{@render children()}
@@ -95,11 +101,11 @@
 	<div class="drawer-side is-drawer-close:overflow-visible">
 		<label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 		<div
-			class="is-drawer-close:w-20 is-drawer-open:w-50 bg-base-100 flex min-h-full flex-col items-start shadow"
+			class="bg-base-100 is-drawer-close:w-20 is-drawer-open:w-60 flex min-h-full flex-col items-start shadow"
 		>
 			<a href="" class="btn btn-ghost mt-4 self-center text-xl font-semibold">Leo</a>
 
-			<ul class="menu mt-6 w-full grow space-y-3 p-4">
+			<ul class="menu mt-6 w-full grow space-y-4 p-4">
 				{#each menuItems as item (item.name)}
 					{@const Icon = item.icon}
 					<li class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip={item.name}>
@@ -114,7 +120,7 @@
 			<div class="is-drawer-close:tooltip is-drawer-close:tooltip-right m-2" data-tip="Open">
 				<label
 					for="app-drawer"
-					class="btn btn-ghost btn-circle drawer-button is-drawer-open:rotate-y-180"
+					class="drawer-button btn btn-circle btn-ghost is-drawer-open:rotate-y-180"
 				>
 					<PanelLeftOpen fill="none" stroke-width="2" class="size-5" />
 				</label>

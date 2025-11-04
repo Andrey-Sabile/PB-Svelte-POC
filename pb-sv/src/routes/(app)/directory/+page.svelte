@@ -30,7 +30,7 @@
 	<section>
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 			<div
-				class="card border-base-100 shadow hover:cursor-pointer hover:shadow-md"
+				class="card border-base-100 bg-base-100 shadow hover:cursor-pointer hover:shadow-md"
 				onclick={(showModal = true)}
 			>
 				<div class="card-body">
