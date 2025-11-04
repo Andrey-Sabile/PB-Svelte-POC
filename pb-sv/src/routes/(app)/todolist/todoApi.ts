@@ -2,18 +2,18 @@ import pb from '$lib/pocketbase';
 import {
     Collections,
     type RecordIdString,
-    TodoItemPriorityLevelOptions,
+    TodoItemsPriorityLevelOptions,
     TodoListColourOptions,
-    type TodoItemRecord,
-    type TodoItemResponse,
+    type TodoItemsRecord,
+    type TodoItemsResponse,
     type TodoListRecord,
     type TodoListResponse
 } from '$lib/types/pocketbase-types';
 
-export type { TodoItemResponse } from '$lib/types/pocketbase-types';
+export type { TodoItemsResponse } from '$lib/types/pocketbase-types';
 
 export type TodoListWithItemsResponse = TodoListResponse<{
-    TodoItem_via_TodoList: TodoItemResponse[];
+    TodoItems_via_TodoList: TodoItemsResponse[];
 }>;
 
 export type TodoListCreateInput = {
@@ -30,17 +30,17 @@ export type TodoItemCreateInput = {
     user: RecordIdString;
     Note?: string;
     done?: boolean;
-    PriorityLevel?: TodoItemPriorityLevelOptions;
+    PriorityLevel?: TodoItemsPriorityLevelOptions;
 };
 
 export type TodoItemUpdateInput = Partial<
-    Pick<TodoItemRecord, 'Title' | 'Note' | 'PriorityLevel' | 'TodoList' | 'done'>
+    Pick<TodoItemsRecord, 'Title' | 'Note' | 'PriorityLevel' | 'todo_list' | 'done'>
 >;
 
 export const getTodoListWithItems = async (): Promise<TodoListWithItemsResponse[]> => {
     return pb
         .collection(Collections.TodoList)
-        .getFullList<TodoListWithItemsResponse>({ expand: 'TodoItem_via_TodoList' });
+        .getFullList<TodoListWithItemsResponse>({ expand: 'todo_items_via_todo_list' });
 };
 
 export const createTodoList = async (data: TodoListCreateInput) => {
@@ -56,13 +56,13 @@ export const deleteTodoList = async (id: RecordIdString) => {
 };
 
 export const createTodoItem = async (data: TodoItemCreateInput) => {
-    return pb.collection(Collections.TodoItem).create<TodoItemResponse>(data);
+    return pb.collection(Collections.TodoItems).create<TodoItemsResponse>(data);
 };
 
 export const updateTodoItem = async (id: RecordIdString, data: TodoItemUpdateInput) => {
-    return pb.collection(Collections.TodoItem).update<TodoItemResponse>(id, data);
+    return pb.collection(Collections.TodoItems).update<TodoItemsResponse>(id, data);
 };
 
 export const deleteTodoItem = async (id: RecordIdString) => {
-    return pb.collection(Collections.TodoItem).delete(id);
+    return pb.collection(Collections.TodoItems).delete(id);
 };

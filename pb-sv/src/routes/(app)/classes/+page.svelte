@@ -11,12 +11,12 @@
 		<div class="space-y-2">
 			<h1 class="text-2xl font-semibold">My Classes</h1>
 		</div>
-		<button class="btn btn-neutral">Create Class</button>
+		<button class="btn btn-primary">Create Class</button>
 	</section>
 
 	<input
 		type="search"
-		class="border-base-300 bg-base-100 focus:ring-neutral-content w-8/12 w-full self-center rounded-xl text-sm outline-none focus:border-neutral-50"
+		class="w-8/12 w-full self-center rounded-xl border-base-300 bg-base-100 text-sm outline-none focus:border-neutral-50 focus:ring-neutral-content"
 	/>
 
 	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -27,7 +27,7 @@
 			>
 				<div class="card-body">
 					<h2 class="card-title text-lg font-semibold">{classroom.Title}</h2>
-					<p class="text-base-content/60 text-sm">{classroom.Description}</p>
+					<p class="text-sm text-base-content/60">{classroom.Description}</p>
 				</div>
 			</a>
 		{/each}

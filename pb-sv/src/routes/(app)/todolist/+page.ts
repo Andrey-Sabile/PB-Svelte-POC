@@ -7,7 +7,7 @@ export const load: PageLoad = async () => {
     const normalised: TodoListWithItemsResponse[] = todoList.map((entry) => ({
         ...entry,
         expand: {
-            TodoItem_via_TodoList: entry.expand?.TodoItem_via_TodoList ?? []
+            TodoItems_via_TodoList: entry.expand?.TodoItems_via_TodoList ?? []
         }
     }));
 

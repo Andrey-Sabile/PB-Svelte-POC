@@ -2,12 +2,12 @@
 	import type { PageProps } from './$types';
 	import { Plus } from '@lucide/svelte';
 	import pb from '$lib/pocketbase';
-	import { TodoItemPriorityLevelOptions } from '$lib/types/pocketbase-types';
+	import { TodoItemsPriorityLevelOptions } from '$lib/types/pocketbase-types';
 	import {
 		createTodoItem,
 		createTodoList,
 		updateTodoItem,
-		type TodoItemResponse,
+		type TodoItemsResponse,
 		type TodoListWithItemsResponse
 	} from './todoApi';
 
@@ -32,11 +32,11 @@
 		return userId;
 	};
 
-	const prependItemToList = (listId: string, item: TodoItemResponse) => {
+	const prependItemToList = (listId: string, item: TodoItemsResponse) => {
 		todoList = todoList.map((entry) => {
 			if (entry.id !== listId) return entry;
 
-			const items = entry.expand?.TodoItem_via_TodoList ?? ([] as TodoItemResponse[]);
+			const items = entry.expand?.TodoItems_via_TodoList ?? ([] as TodoItemsResponse[]);
 			return {
 				...entry,
 				expand: {
@@ -50,12 +50,12 @@
 	const updateItemInList = (
 		listId: string,
 		itemId: string,
-		updater: (item: TodoItemResponse) => TodoItemResponse
+		updater: (item: TodoItemsResponse) => TodoItemsResponse
 	) => {
 		todoList = todoList.map((entry) => {
 			if (entry.id !== listId) return entry;
 
-			const items = entry.expand?.TodoItem_via_TodoList ?? ([] as TodoItemResponse[]);
+			const items = entry.expand?.TodoItems_via_TodoList ?? ([] as TodoItemsResponse[]);
 			return {
 				...entry,
 				expand: {
@@ -73,7 +73,7 @@
 		if (!userId) return;
 
 		const defaultPriority =
-			list.expand?.TodoItem_via_TodoList?.[0]?.PriorityLevel ?? TodoItemPriorityLevelOptions.E1;
+			list.expand?.TodoItems_via_TodoList?.[0]?.PriorityLevel ?? TodoItemsPriorityLevelOptions.E1;
 
 		try {
 			const created = await createTodoItem({
@@ -84,7 +84,7 @@
 				done: false,
 				PriorityLevel: defaultPriority
 			});
-			const createdItem: TodoItemResponse = { ...created, expand: created.expand ?? {} };
+			const createdItem: TodoItemsResponse = { ...created, expand: created.expand ?? {} };
 			prependItemToList(list.id, createdItem);
 		} catch (error) {
 			console.error('Failed to add todo item', error);
@@ -130,7 +130,7 @@
 
 			const withExpand: TodoListWithItemsResponse = {
 				...created,
-				expand: { TodoItem_via_TodoList: [] as TodoItemResponse[] }
+				expand: { TodoItems_via_TodoList: [] as TodoItemsResponse[] }
 			};
 
 			todoList = [...todoList, withExpand];
@@ -176,7 +176,7 @@
 				</button>
 			</div>
 
-			{#each selectedTodoList?.expand?.TodoItem_via_TodoList ?? [] as item (item.id)}
+			{#each selectedTodoList?.expand?.TodoItems_via_TodoList ?? [] as item (item.id)}
 				{#if !item.done}
 					<li class="list-row hover:bg-base-200 flex items-center">
 						<input type="checkbox" class="checkbox" on:change={() => markItemDone(item.id)} />
