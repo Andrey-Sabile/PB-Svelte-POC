@@ -17,7 +17,6 @@
 		NotepadText,
 		type Icon as IconType
 	} from '@lucide/svelte';
-	import Link from '$lib/navigation/Link.svelte';
 
 	type MenuItem = {
 		name: string;
@@ -109,10 +108,10 @@
 				{#each menuItems as item (item.name)}
 					{@const Icon = item.icon}
 					<li class="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip={item.name}>
-						<Link href={item.href}>
+						<a href={item.href} data-sveltekit-preload-data="hover">
 							<Icon fill="none" stroke-width="2" class="size-5" />
 							<span class="is-drawer-close:hidden">{item.name}</span>
-						</Link>
+						</a>
 					</li>
 				{/each}
 			</ul>

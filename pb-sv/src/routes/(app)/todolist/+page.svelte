@@ -144,7 +144,7 @@
 </script>
 
 <div class="grid h-[90vh] grid-cols-[1fr_2fr] gap-6 p-6">
-	<div class="card bg-base-100 shadow md:grid-cols-2">
+	<div class="card bg-base-100 card-border border-neutral-200 md:grid-cols-2">
 		<ul class="card-body list gap-6">
 			<div class="card-title group min-h-12">
 				<p>Todo Lists</p>
@@ -167,7 +167,7 @@
 		</ul>
 	</div>
 
-	<div class="card bg-base-100 overflow-y-auto shadow">
+	<div class="card bg-base-100 card-border overflow-y-auto border-neutral-200">
 		<ul class="card-body list gap-6">
 			<div class="card-title group flex min-h-12">
 				<p>{selectedTodoList?.Title ?? ''}</p>

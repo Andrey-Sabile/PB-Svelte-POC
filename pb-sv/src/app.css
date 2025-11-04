@@ -122,13 +122,14 @@
 	--color-base-content: oklch(90% 0.02 240deg);
 
 	/* Brand colors (Linear’s indigo purple and variants) */
-	--color-primary: oklch(
-		57% 0.16 275deg
-	); /* Linear indigo #5E6AD2 :contentReference[oaicite:4]{index=4}*/
+	--color-primary: oklch(57% 0.16 275deg);
+	/* Linear indigo #5E6AD2 :contentReference[oaicite:4]{index=4}*/
 	--color-primary-content: oklch(95% 0.02 240deg);
-	--color-secondary: oklch(50% 0.1 275deg); /* Muted dark purple tone */
+	--color-secondary: oklch(50% 0.1 275deg);
+	/* Muted dark purple tone */
 	--color-secondary-content: oklch(95% 0.02 240deg);
-	--color-accent: oklch(48% 0.22 275deg); /* Deep vibrant purple accent */
+	--color-accent: oklch(48% 0.22 275deg);
+	/* Deep vibrant purple accent */
 	--color-accent-content: oklch(95% 0.02 240deg);
 
 	/* Neutral colors (for generic gray components) */
@@ -195,11 +196,12 @@
 	--noise: 0.8;
 }
 
+
 @plugin "daisyui/theme" {
-	name: 'light';
+	name: "light";
 	default: false;
 	prefersdark: false;
-	color-scheme: 'light';
+	color-scheme: "light";
 	--color-base-100: oklch(98% 0.003 247.858);
 	--color-base-200: oklch(96% 0.007 247.896);
 	--color-base-300: oklch(92% 0.013 255.508);
@@ -220,9 +222,9 @@
 	--color-warning-content: oklch(98% 0.022 95.277);
 	--color-error: oklch(59% 0.249 0.584);
 	--color-error-content: oklch(97% 0.014 343.198);
-	--radius-selector: 0rem;
-	--radius-field: 0rem;
-	--radius-box: 0.5rem;
+	--radius-selector: 1rem;
+	--radius-field: 0.5rem;
+	--radius-box: 1rem;
 	--size-selector: 0.25rem;
 	--size-field: 0.25rem;
 	--border: 1px;
@@ -231,6 +233,7 @@
 }
 
 @layer base {
+
 	input[type='number']::-webkit-outer-spin-button,
 	input[type='number']::-webkit-inner-spin-button,
 	input[type='number'] {
@@ -241,8 +244,7 @@
 
 	.btn:focus,
 	.input:focus,
-	.select:focus {
-	}
+	.select:focus {}
 }
 
 @plugin '@tailwindcss/forms';
