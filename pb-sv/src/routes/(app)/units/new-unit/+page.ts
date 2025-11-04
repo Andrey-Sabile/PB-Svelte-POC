@@ -1,8 +1,11 @@
+import pb from '$lib/pocketbase';
 import type {
 	IsoDateString,
-	RecordIdString
+	RecordIdString,
+	ClassroomsResponse,
+	SubjectsResponse
 } from '$lib/types/pocketbase-types';
-import { TeachingUnitsStatusOptions } from '$lib/types/pocketbase-types';
+import { Collections, TeachingUnitsStatusOptions } from '$lib/types/pocketbase-types';
 import type { PageLoad } from './$types';
 
 export type TeachingUnitModel = {
@@ -14,7 +17,7 @@ export type TeachingUnitModel = {
 	startDate?: IsoDateString | null;
 	endDate?: IsoDateString | null;
 	status: TeachingUnitsStatusOptions;
-	teacherId: RecordIdString | null;
+	userid: RecordIdString | null;
 	learningObjectives: RecordIdString[];
 	lessons: RecordIdString[];
 	resources: RecordIdString[];
@@ -23,6 +26,16 @@ export type TeachingUnitModel = {
 	tags: string[];
 };
 
+const getClasses = async (): Promise<ClassroomsResponse[]> => {
+	return pb.collection(Collections.Classrooms).getFullList<ClassroomsResponse>();
+};
+
+const getSubjects = async (): Promise<SubjectsResponse[]> => {
+	return pb.collection(Collections.Subjects).getFullList<SubjectsResponse>();
+};
+
 export const load = (async () => {
-	return {};
+	const classes = await getClasses();
+
+	return { classes };
 }) satisfies PageLoad;

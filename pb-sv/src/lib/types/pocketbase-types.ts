@@ -440,9 +440,9 @@ export type TeachingUnitsRecord<Ttags = unknown> = {
 	status: TeachingUnitsStatusOptions
 	subject?: string
 	tags?: null | Ttags
-	teacherId: RecordIdString
 	title: string
 	updated?: IsoDateString
+	userid?: RecordIdString
 }
 
 export enum TodoItemsPriorityLevelOptions {
