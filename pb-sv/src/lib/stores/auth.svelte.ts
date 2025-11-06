@@ -1,6 +1,6 @@
-import { pb } from '$lib'
-import type { UsersResponse } from '$lib/types/pocketbase-types';
-import { getContext, setContext } from 'svelte';
+import { pb } from "$lib";
+import type { UsersResponse } from "$lib/types/pocketbase-types";
+import { createContext } from "svelte";
 
 class AuthStore {
     user = $state<UsersResponse | null>(null);
@@ -26,13 +26,14 @@ class AuthStore {
     }
 }
 
-const AUTH_STORE_KEY = 'auth store';
+const [getAuthContextInternal, setAuthContextInternal] = createContext<AuthStore>();
 
 export const setAuthContext = () => {
-    const nAuthStore = new AuthStore();
-    return setContext<AuthStore>(AUTH_STORE_KEY, nAuthStore);
+    const newAuthStore = new AuthStore();
+    setAuthContextInternal(newAuthStore);
+    return newAuthStore;
 };
 
 export const getAuthContext = () => {
-    return getContext<AuthStore>(AUTH_STORE_KEY);
+    return getAuthContextInternal();
 };

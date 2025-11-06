@@ -1,4 +1,4 @@
-import pb from "$lib/pocketbase";
+import { pb } from "$lib";
 import { Collections, type ClassroomsResponse } from "$lib/types/pocketbase-types";
 
 export const getClassrooms = async ():

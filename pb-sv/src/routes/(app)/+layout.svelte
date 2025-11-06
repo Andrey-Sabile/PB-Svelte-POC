@@ -1,9 +1,7 @@
 <script lang="ts">
-	import pb, { clearPocketBaseAuth } from '$lib/pocketbase';
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { authState } from '$lib/stores/auth';
+	import { setAuthContext } from '$lib/stores/auth.svelte';
 	import type { LayoutProps } from './$types';
 	import {
 		ClipboardList,
@@ -67,24 +65,15 @@
 		}
 	];
 
-	let unsub: () => void;
+	const auth = setAuthContext();
 
-	onMount(() => {
-		const check = ({ isValid }: { isValid: boolean }) => {
-			if (!isValid) {
-				goto(resolve('/login'));
-			}
-		};
-
-		unsub = authState.subscribe(check);
-
-		return () => {
-			unsub?.();
-		};
+	$effect(() => {
+		if (!auth.isSynced) return;
+		if (!auth.user) goto(resolve('/login'));
 	});
 
 	const logout = async () => {
-		clearPocketBaseAuth();
+		auth.logout();
 		await goto(resolve('/login'));
 	};
 
@@ -102,7 +91,7 @@
 		<div
 			class="bg-base-100 is-drawer-close:w-20 is-drawer-open:w-60 flex min-h-full flex-col items-start shadow"
 		>
-			<a href="" class="btn btn-ghost mt-4 self-center text-xl font-semibold">Leo</a>
+			<a href="/" class="btn btn-ghost mt-4 self-center text-xl font-semibold">Leo</a>
 
 			<ul class="menu mt-6 w-full grow space-y-4 p-4">
 				{#each menuItems as item (item.name)}

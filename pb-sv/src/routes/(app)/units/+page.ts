@@ -1,4 +1,4 @@
-import pb from '$lib/pocketbase';
+import { pb } from '$lib';
 import { Collections, type ClassroomsResponse, type TeachingUnitsResponse } from '$lib/types/pocketbase-types';
 import type { PageLoad } from './$types';
 
