@@ -41,21 +41,46 @@
 				</div>
 			</div>
 		{:else}
-			<ul class="space-y-3">
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 				{#each teachingUnits as unit}
-					<li class="bg-base-100 card card-border border-neutral-200">
-						<div class="card-body gap-2">
-							<h2 class="text-lg font-medium">{unit.title}</h2>
-							{#if unit.description}
-								<p class="text-base-content/70 text-sm">{unit.description}</p>
-							{/if}
-							<div class="text-base-content/60 text-xs">
-								Status: {unit.status}
+					<a
+						href={`/units/${unit.id}`}
+						class="card bg-base-100 hover:shadow-xs border border-neutral-200 hover:cursor-pointer"
+					>
+						<div class="card-body">
+							<div class="flex gap-2">
+								<div class="badge badge-soft badge-warning">Status</div>
+								<div class="badge badge-neutral badge-outline">
+									{unit.expand?.classId?.Title ?? 'Unassigned'}
+								</div>
 							</div>
-						</div>
-					</li>
+
+							<h2 class="text-lg">{unit.title}</h2>
+
+							<div class="grid gap-2 md:grid-cols-3">
+								<div class="card bg-blue-100">
+									<div class="card-body items-center">
+										<p class="text-sm">0</p>
+										<h3 class="text-sm">Lessons</h3>
+									</div>
+								</div>
+								<div class="card bg-green-100">
+									<div class="card-body items-center">
+										<p class="text-sm">0</p>
+										<h3 class="text-sm">Assignments</h3>
+									</div>
+								</div>
+								<div class="card bg-violet-100">
+									<div class="card-body items-center">
+										<p class="text-sm">0</p>
+										<h3 class="text-sm">Assessments</h3>
+									</div>
+								</div>
+							</div>
+						</div></a
+					>
 				{/each}
-			</ul>
+			</div>
 		{/if}
 	</section>
 </main>

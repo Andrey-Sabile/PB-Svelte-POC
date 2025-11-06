@@ -1,9 +1,21 @@
 import pb from '$lib/pocketbase';
-import { Collections, type TeachingUnitsResponse } from '$lib/types/pocketbase-types';
+import { Collections, type ClassroomsResponse, type TeachingUnitsResponse } from '$lib/types/pocketbase-types';
 import type { PageLoad } from './$types';
 
-const getTeachingUnits = async (): Promise<TeachingUnitsResponse[]> => {
-	return pb.collection(Collections.TeachingUnits).getFullList<TeachingUnitsResponse>();
+type TeachingUnitWithClassroom = TeachingUnitsResponse<unknown, { classId?: ClassroomsResponse }>;
+
+const getTeachingUnits = async (): Promise<TeachingUnitWithClassroom[]> => {
+	const records = await pb.collection(Collections.TeachingUnits).getFullList<TeachingUnitWithClassroom>({
+		expand: 'classId'
+	});
+
+	return records.map((unit) => ({
+		...unit,
+		expand: {
+			...unit.expand,
+			classId: unit.expand?.classId
+		}
+	}));
 };
 
 export const load = (async () => {

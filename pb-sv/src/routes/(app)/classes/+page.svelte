@@ -16,7 +16,7 @@
 
 	<input
 		type="search"
-		class="border-base-300 bg-base-100 focus:ring-neutral-content w-8/12 w-full self-center rounded-xl text-sm outline-none focus:border-neutral-50"
+		class="border-base-300 bg-base-100 focus:ring-neutral-content w-full self-center rounded-xl text-sm outline-none focus:border-neutral-50"
 	/>
 
 	<div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
