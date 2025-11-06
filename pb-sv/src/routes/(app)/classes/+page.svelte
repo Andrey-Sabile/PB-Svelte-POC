@@ -1,9 +1,19 @@
 <script lang="ts">
-	import type { ClassroomsResponse } from '$lib/types/pocketbase-types';
-	import type { PageProps } from './$types';
+	import { onMount } from 'svelte';
+	import { setClassesContext } from '$lib/pocketbase/classes.svelte';
 
-	let { data }: PageProps = $props();
-	let classrooms = $state<ClassroomsResponse[]>(data.classrooms ?? []);
+	const classesStore = setClassesContext();
+	const classrooms = $derived(classesStore.classes);
+
+	onMount(async () => {
+		if (!classesStore.classes.length) {
+			try {
+				await classesStore.refresh();
+			} catch (error) {
+				console.error('Failed to load classes', error);
+			}
+		}
+	});
 </script>
 
 <main class="grid gap-12 pb-20">

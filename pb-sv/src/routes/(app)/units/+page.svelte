@@ -1,9 +1,21 @@
 <script lang="ts">
-	import type { PageProps } from './$types';
 	import { BookOpen, Plus } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
+	import { setTeachingUnitContext } from '$lib/pocketbase/teachingUnit.svelte';
+	import { onMount } from 'svelte';
 
-	let { data }: PageProps = $props();
-	const teachingUnits = $derived(data.teachingUnits ?? []);
+	const teachingUnitStore = setTeachingUnitContext();
+	const teachingUnits = $derived(teachingUnitStore.teachingUnits);
+
+	onMount(async () => {
+		if (!teachingUnitStore.teachingUnits.length) {
+			try {
+				await teachingUnitStore.refresh();
+			} catch (error) {
+				console.error('Failed to load teaching units', error);
+			}
+		}
+	});
 </script>
 
 <main class="grid gap-6 pb-20">
@@ -15,10 +27,10 @@
 			</p>
 		</div>
 		<div class="flex gap-6">
-			<a class="btn btn-primary" type="button" href="/units/new-unit">
+			<button type="button" class="btn btn-primary" onclick={() => goto('/units/newUnit')}>
 				<Plus></Plus>
 				Create Unit
-			</a>
+			</button>
 		</div>
 	</section>
 
@@ -46,10 +58,13 @@
 					<a
 						href={`/units/${unit.id}`}
 						class="card bg-base-100 hover:shadow-xs border border-neutral-200 hover:cursor-pointer"
+						data-sveltekit-preload-data="hover"
 					>
 						<div class="card-body">
 							<div class="flex gap-2">
-								<div class="badge badge-soft badge-warning">Status</div>
+								<div class="badge badge-soft badge-warning">
+									{unit.status ?? 'Unknown'}
+								</div>
 								<div class="badge badge-neutral badge-outline">
 									{unit.expand?.classId?.Title ?? 'Unassigned'}
 								</div>
@@ -60,25 +75,25 @@
 							<div class="grid gap-2 md:grid-cols-3">
 								<div class="card bg-blue-100">
 									<div class="card-body items-center">
-										<p class="text-sm">0</p>
+										<p class="text-sm">{unit.lessons?.length ?? 0}</p>
 										<h3 class="text-sm">Lessons</h3>
 									</div>
 								</div>
 								<div class="card bg-green-100">
 									<div class="card-body items-center">
-										<p class="text-sm">0</p>
+										<p class="text-sm">{unit.assignments?.length ?? 0}</p>
 										<h3 class="text-sm">Assignments</h3>
 									</div>
 								</div>
 								<div class="card bg-violet-100">
 									<div class="card-body items-center">
-										<p class="text-sm">0</p>
+										<p class="text-sm">{unit.assessments?.length ?? 0}</p>
 										<h3 class="text-sm">Assessments</h3>
 									</div>
 								</div>
 							</div>
-						</div></a
-					>
+						</div>
+					</a>
 				{/each}
 			</div>
 		{/if}
