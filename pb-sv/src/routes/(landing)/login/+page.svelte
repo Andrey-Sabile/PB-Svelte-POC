@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { loginUser } from '$lib/stores/auth';
+	import { getAuthContext } from '$lib/stores/auth.svelte';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
 	let form = $state({ email: '', password: '', error: '' });
 	let loading = $state(false);
+	const auth = getAuthContext();
+
+	$effect(() => {
+		if (auth.user) goto('/todolist');
+	});
 
 	const handleLogin = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -13,7 +18,7 @@
 		loading = true;
 
 		try {
-			await loginUser(form.email, form.password);
+			await auth.loginWithPassword(form.email, form.password);
 			await goto('/todolist');
 		} catch (error) {
 			form.error = 'Invalid email or password';
