@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { BookOpen, Plus } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
-	import { getTeachingUnitContext } from '$lib/pocketbase/teachingUnit.svelte';
+	import { getTeachingUnitContext } from '$lib/stores/teachingUnitStore.svelte';
 	import { onMount } from 'svelte';
 
 	const teachingUnitStore = getTeachingUnitContext();

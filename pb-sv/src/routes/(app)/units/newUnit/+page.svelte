@@ -6,7 +6,7 @@
 	import {
 		getTeachingUnitContext,
 		type TeachingUnitCreateInput
-	} from '$lib/pocketbase/teachingUnit.svelte';
+	} from '$lib/stores/teachingUnitStore.svelte';
 	import { setLessonsContext } from '$lib/pocketbase/lessons.svelte';
 	import { setAssignmentsContext } from '$lib/pocketbase/assignments.svelte';
 	import { setAssessmentsContext } from '$lib/pocketbase/assessments.svelte';

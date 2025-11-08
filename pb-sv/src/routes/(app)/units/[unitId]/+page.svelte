@@ -3,7 +3,7 @@
 	import {
 		getTeachingUnitContext,
 		type TeachingUnitWithExpand
-	} from '$lib/pocketbase/teachingUnit.svelte';
+	} from '$lib/stores/teachingUnitStore.svelte';
 	import type { RecordIdString } from '$lib/types/pocketbase-types';
 
 	const teachingUnitStore = getTeachingUnitContext();
