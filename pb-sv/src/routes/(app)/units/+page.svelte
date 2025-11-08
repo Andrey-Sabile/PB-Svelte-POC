@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { BookOpen, Plus } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
-	import { setTeachingUnitContext } from '$lib/pocketbase/teachingUnit.svelte';
+	import { getTeachingUnitContext } from '$lib/pocketbase/teachingUnit.svelte';
 	import { onMount } from 'svelte';
 
-	const teachingUnitStore = setTeachingUnitContext();
+	const teachingUnitStore = getTeachingUnitContext();
 	const teachingUnits = $derived(teachingUnitStore.teachingUnits);
 
 	onMount(async () => {

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { setAuthContext } from '$lib/stores/auth.svelte';
+	import { setTeachingUnitContext } from '$lib/pocketbase/teachingUnit.svelte';
 	import type { LayoutProps } from './$types';
 	import {
 		ClipboardList,
@@ -66,6 +67,7 @@
 	];
 
 	const auth = setAuthContext();
+	setTeachingUnitContext();
 
 	$effect(() => {
 		if (!auth.isSynced) return;

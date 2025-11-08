@@ -112,7 +112,7 @@ export class TeachingUnitStore {
             .create<TeachingUnitWithExpand>(payload, { expand: TEACHING_UNIT_EXPAND_KEY });
 
         const normalised = this.normaliseUnit(created);
-        this.teachingUnits = [...this.teachingUnits, normalised];
+        this.upsertLocal(normalised);
         return normalised;
     }
 
@@ -122,6 +122,7 @@ export class TeachingUnitStore {
             .update<TeachingUnitWithExpand>(id, data, { expand: TEACHING_UNIT_EXPAND_KEY });
 
         const normalised = this.normaliseUnit(updated);
+
         this.upsertLocal(normalised);
         return normalised;
     }
@@ -135,12 +136,28 @@ export class TeachingUnitStore {
 const [getTeachingUnitContextInternal, setTeachingUnitContextInternal] =
     createContext<TeachingUnitStore>();
 
+let teachingUnitStoreSingleton: TeachingUnitStore | null = null;
+let teachingUnitContextRegistered = false;
+
+const getOrCreateTeachingUnitStore = () => {
+    if (!teachingUnitStoreSingleton) {
+        teachingUnitStoreSingleton = new TeachingUnitStore();
+    }
+
+    return teachingUnitStoreSingleton;
+};
+
 export const setTeachingUnitContext = () => {
-    const store = new TeachingUnitStore();
+    const store = getOrCreateTeachingUnitStore();
+    teachingUnitContextRegistered = true;
     setTeachingUnitContextInternal(store);
     return store;
 };
 
 export const getTeachingUnitContext = () => {
+    if (!teachingUnitContextRegistered) {
+        return getOrCreateTeachingUnitStore();
+    }
+
     return getTeachingUnitContextInternal();
 };

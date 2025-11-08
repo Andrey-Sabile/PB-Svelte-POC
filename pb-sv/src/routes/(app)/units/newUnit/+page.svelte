@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { getAuthContext } from '$lib/stores/auth.svelte';
 	import {
-		setTeachingUnitContext,
+		getTeachingUnitContext,
 		type TeachingUnitCreateInput
 	} from '$lib/pocketbase/teachingUnit.svelte';
 	import { setLessonsContext } from '$lib/pocketbase/lessons.svelte';
@@ -57,7 +57,7 @@
 	});
 
 	const auth = getAuthContext();
-	const teachingUnitStore = setTeachingUnitContext();
+	const teachingUnitStore = getTeachingUnitContext();
 	const lessonsStore = setLessonsContext();
 	const assignmentsStore = setAssignmentsContext();
 	const assessmentsStore = setAssessmentsContext();
@@ -226,7 +226,7 @@
 			localUnit.learningObjectives = createdObjectives.map((objective) => objective.description);
 
 			console.debug('Created teaching unit', createdUnit);
-			await goto('/unitsStore');
+			await goto('/units');
 		} catch (error) {
 			console.error('Failed to create teaching unit', error);
 			if (!errorMessage) {
