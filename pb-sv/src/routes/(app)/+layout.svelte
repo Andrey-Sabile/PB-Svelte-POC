@@ -3,6 +3,12 @@
 	import { resolve } from '$app/paths';
 	import { setAuthContext } from '$lib/stores/auth.svelte';
 	import { setTeachingUnitContext } from '$lib/stores/teachingUnitStore.svelte';
+	import { setLessonsContext } from '$lib/stores/lessonsStore.svelte';
+	import { setAssignmentsContext } from '$lib/stores/assignmentsStore.svelte';
+	import { setAssessmentsContext } from '$lib/stores/assessmentsStore.svelte';
+	import { setLearningObjectivesContext } from '$lib/stores/learningObjectivesStore.svelte';
+	import { setResourcesContext } from '$lib/stores/resourcesStore.svelte';
+	import { setClassesContext } from '$lib/stores/classesStore.svelte';
 	import type { LayoutProps } from './$types';
 	import {
 		ClipboardList,
@@ -68,6 +74,12 @@
 
 	const auth = setAuthContext();
 	setTeachingUnitContext();
+	setLessonsContext();
+	setAssignmentsContext();
+	setAssessmentsContext();
+	setLearningObjectivesContext();
+	setResourcesContext();
+	setClassesContext();
 
 	$effect(() => {
 		if (!auth.isSynced) return;

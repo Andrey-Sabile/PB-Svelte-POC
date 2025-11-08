@@ -14,12 +14,6 @@ import {
 export class TeachingUnitStore {
     teachingUnits = $state<TeachingUnitWithExpand[]>([]);
 
-    constructor() {
-        $effect(() => {
-            void this.refresh();
-        });
-    }
-
     private ensureExpand(expand?: TeachingUnitExpand | null): TeachingUnitExpand {
         return {
             ...(expand ?? {}),

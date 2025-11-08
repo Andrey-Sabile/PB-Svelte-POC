@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { setClassesContext } from '$lib/stores/classesStore.svelte';
+	import { getClassesContext } from '$lib/stores/classesStore.svelte';
 
-	const classesStore = setClassesContext();
+	const classesStore = getClassesContext();
 	const classrooms = $derived(classesStore.classes);
 
 	onMount(async () => {

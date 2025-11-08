@@ -7,12 +7,12 @@
 		getTeachingUnitContext,
 		type TeachingUnitCreateInput
 	} from '$lib/stores/teachingUnitStore.svelte';
-	import { setLessonsContext } from '$lib/stores/lessonsStore.svelte';
-	import { setAssignmentsContext } from '$lib/stores/assignmentsStore.svelte';
-	import { setAssessmentsContext } from '$lib/stores/assessmentsStore.svelte';
-	import { setLearningObjectivesContext } from '$lib/stores/learningObjectivesStore.svelte';
-	import { setResourcesContext } from '$lib/stores/resourcesStore.svelte';
-	import { setClassesContext } from '$lib/stores/classesStore.svelte';
+	import { getLessonsContext } from '$lib/stores/lessonsStore.svelte';
+	import { getAssignmentsContext } from '$lib/stores/assignmentsStore.svelte';
+	import { getAssessmentsContext } from '$lib/stores/assessmentsStore.svelte';
+	import { getLearningObjectivesContext } from '$lib/stores/learningObjectivesStore.svelte';
+	import { getResourcesContext } from '$lib/stores/resourcesStore.svelte';
+	import { getClassesContext } from '$lib/stores/classesStore.svelte';
 	import {
 		TeachingUnitsStatusOptions,
 		type IsoDateString,
@@ -58,12 +58,12 @@
 
 	const auth = getAuthContext();
 	const teachingUnitStore = getTeachingUnitContext();
-	const lessonsStore = setLessonsContext();
-	const assignmentsStore = setAssignmentsContext();
-	const assessmentsStore = setAssessmentsContext();
-	const learningObjectivesStore = setLearningObjectivesContext();
-	const resourcesStore = setResourcesContext();
-	const classesStore = setClassesContext();
+	const lessonsStore = getLessonsContext();
+	const assignmentsStore = getAssignmentsContext();
+	const assessmentsStore = getAssessmentsContext();
+	const learningObjectivesStore = getLearningObjectivesContext();
+	const resourcesStore = getResourcesContext();
+	const classesStore = getClassesContext();
 	const classes = $derived(classesStore.classes);
 
 	let currentUserId = $state<RecordIdString | null>(null);
