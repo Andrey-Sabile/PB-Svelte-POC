@@ -1,25 +1,11 @@
-import { pb } from "$lib";
+import { createContext } from 'svelte';
 import {
-    Collections,
-    type LearningObjectivesRecord,
-    type LearningObjectivesResponse,
-    type RecordIdString
-} from "$lib/types/pocketbase-types";
-import { createContext } from "svelte";
-
-type LearningObjectiveRecordBase = LearningObjectivesRecord;
-type LearningObjectiveResponse = LearningObjectivesResponse<unknown>;
-
-const escapeFilterValue = (value: string) => value.replace(/"/g, '\\"');
-
-export type LearningObjectiveCreateInput = Omit<
-    LearningObjectiveRecordBase,
-    "id" | "created" | "updated"
-> &
-    Required<Pick<LearningObjectiveRecordBase, "unitId">>;
-export type LearningObjectiveUpdateInput = Partial<
-    Omit<LearningObjectiveRecordBase, "id" | "created" | "updated">
->;
+    learningObjectivesService,
+    type LearningObjectiveCreateInput,
+    type LearningObjectiveResponse,
+    type LearningObjectiveUpdateInput
+} from '$lib/pocketbase/learningObjectives.service';
+import type { RecordIdString } from '$lib/types/pocketbase-types';
 
 export class LearningObjectivesStore {
     objectivesByUnit = $state<Record<RecordIdString, LearningObjectiveResponse[]>>({});
@@ -71,21 +57,13 @@ export class LearningObjectivesStore {
     }
 
     async refresh(unitId: RecordIdString) {
-        const filterUnitId = escapeFilterValue(unitId);
-        const records = await pb
-            .collection(Collections.LearningObjectives)
-            .getFullList<LearningObjectiveResponse>({
-                filter: `unitId="${filterUnitId}"`
-            });
-
+        const records = await learningObjectivesService.listByUnit(unitId);
         this.setObjectives(unitId, records);
         return records;
     }
 
     async fetch(objectiveId: RecordIdString) {
-        const record = await pb
-            .collection(Collections.LearningObjectives)
-            .getOne<LearningObjectiveResponse>(objectiveId);
+        const record = await learningObjectivesService.get(objectiveId);
         const unitId = record.unitId;
 
         if (unitId) {
@@ -96,9 +74,7 @@ export class LearningObjectivesStore {
     }
 
     async createObjective(data: LearningObjectiveCreateInput) {
-        const created = await pb
-            .collection(Collections.LearningObjectives)
-            .create<LearningObjectiveResponse>(data);
+        const created = await learningObjectivesService.create(data);
         const unitId = created.unitId ?? data.unitId;
 
         if (unitId) {
@@ -109,9 +85,7 @@ export class LearningObjectivesStore {
     }
 
     async updateObjective(id: RecordIdString, data: LearningObjectiveUpdateInput) {
-        const updated = await pb
-            .collection(Collections.LearningObjectives)
-            .update<LearningObjectiveResponse>(id, data);
+        const updated = await learningObjectivesService.update(id, data);
         const nextUnitId = updated.unitId ?? data.unitId ?? null;
         const originalLocation = this.findObjectiveLocation(id);
 
@@ -127,7 +101,7 @@ export class LearningObjectivesStore {
     }
 
     async deleteObjective(id: RecordIdString) {
-        await pb.collection(Collections.LearningObjectives).delete(id);
+        await learningObjectivesService.remove(id);
         const location = this.findObjectiveLocation(id);
 
         if (location) {
@@ -139,12 +113,34 @@ export class LearningObjectivesStore {
 const [getLearningObjectivesContextInternal, setLearningObjectivesContextInternal] =
     createContext<LearningObjectivesStore>();
 
+let learningObjectivesStoreSingleton: LearningObjectivesStore | null = null;
+let learningObjectivesContextRegistered = false;
+
+const getOrCreateLearningObjectivesStore = () => {
+    if (!learningObjectivesStoreSingleton) {
+        learningObjectivesStoreSingleton = new LearningObjectivesStore();
+    }
+
+    return learningObjectivesStoreSingleton;
+};
+
 export const setLearningObjectivesContext = () => {
-    const store = new LearningObjectivesStore();
+    const store = getOrCreateLearningObjectivesStore();
+    learningObjectivesContextRegistered = true;
     setLearningObjectivesContextInternal(store);
     return store;
 };
 
 export const getLearningObjectivesContext = () => {
+    if (!learningObjectivesContextRegistered) {
+        return getOrCreateLearningObjectivesStore();
+    }
+
     return getLearningObjectivesContextInternal();
 };
+
+export type {
+    LearningObjectiveCreateInput,
+    LearningObjectiveUpdateInput,
+    LearningObjectiveResponse
+} from '$lib/pocketbase/learningObjectives.service';

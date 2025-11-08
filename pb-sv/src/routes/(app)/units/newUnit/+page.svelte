@@ -7,12 +7,12 @@
 		getTeachingUnitContext,
 		type TeachingUnitCreateInput
 	} from '$lib/stores/teachingUnitStore.svelte';
-	import { setLessonsContext } from '$lib/pocketbase/lessons.svelte';
-	import { setAssignmentsContext } from '$lib/pocketbase/assignments.svelte';
-	import { setAssessmentsContext } from '$lib/pocketbase/assessments.svelte';
-	import { setLearningObjectivesContext } from '$lib/pocketbase/learningObjectives.svelte';
-	import { setResourcesContext } from '$lib/pocketbase/resources.svelte';
-	import { setClassesContext } from '$lib/pocketbase/classes.svelte';
+	import { setLessonsContext } from '$lib/stores/lessonsStore.svelte';
+	import { setAssignmentsContext } from '$lib/stores/assignmentsStore.svelte';
+	import { setAssessmentsContext } from '$lib/stores/assessmentsStore.svelte';
+	import { setLearningObjectivesContext } from '$lib/stores/learningObjectivesStore.svelte';
+	import { setResourcesContext } from '$lib/stores/resourcesStore.svelte';
+	import { setClassesContext } from '$lib/stores/classesStore.svelte';
 	import {
 		TeachingUnitsStatusOptions,
 		type IsoDateString,

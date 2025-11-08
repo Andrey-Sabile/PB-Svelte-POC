@@ -1,20 +1,11 @@
-import { pb } from "$lib";
+import { createContext } from 'svelte';
 import {
-    Collections,
-    type AssessmentsRecord,
-    type AssessmentsResponse,
-    type RecordIdString
-} from "$lib/types/pocketbase-types";
-import { createContext } from "svelte";
-
-type AssessmentRecordBase = AssessmentsRecord;
-type AssessmentResponse = AssessmentsResponse<unknown>;
-
-const escapeFilterValue = (value: string) => value.replace(/"/g, '\\"');
-
-export type AssessmentCreateInput = Omit<AssessmentRecordBase, "id" | "created" | "updated"> &
-    Required<Pick<AssessmentRecordBase, "unitId">>;
-export type AssessmentUpdateInput = Partial<Omit<AssessmentRecordBase, "id" | "created" | "updated">>;
+    assessmentsService,
+    type AssessmentCreateInput,
+    type AssessmentResponse,
+    type AssessmentUpdateInput
+} from '$lib/pocketbase/assessments.service';
+import type { RecordIdString } from '$lib/types/pocketbase-types';
 
 export class AssessmentsStore {
     assessmentsByUnit = $state<Record<RecordIdString, AssessmentResponse[]>>({});
@@ -66,19 +57,13 @@ export class AssessmentsStore {
     }
 
     async refresh(unitId: RecordIdString) {
-        const filterUnitId = escapeFilterValue(unitId);
-        const records = await pb.collection(Collections.Assessments).getFullList<AssessmentResponse>({
-            filter: `unitId="${filterUnitId}"`
-        });
-
+        const records = await assessmentsService.listByUnit(unitId);
         this.setAssessments(unitId, records);
         return records;
     }
 
     async fetch(assessmentId: RecordIdString) {
-        const record = await pb
-            .collection(Collections.Assessments)
-            .getOne<AssessmentResponse>(assessmentId);
+        const record = await assessmentsService.get(assessmentId);
         const unitId = record.unitId;
 
         if (unitId) {
@@ -89,9 +74,7 @@ export class AssessmentsStore {
     }
 
     async createAssessment(data: AssessmentCreateInput) {
-        const created = await pb
-            .collection(Collections.Assessments)
-            .create<AssessmentResponse>(data);
+        const created = await assessmentsService.create(data);
         const unitId = created.unitId ?? data.unitId;
 
         if (unitId) {
@@ -102,9 +85,7 @@ export class AssessmentsStore {
     }
 
     async updateAssessment(id: RecordIdString, data: AssessmentUpdateInput) {
-        const updated = await pb
-            .collection(Collections.Assessments)
-            .update<AssessmentResponse>(id, data);
+        const updated = await assessmentsService.update(id, data);
         const nextUnitId = updated.unitId ?? data.unitId ?? null;
         const originalLocation = this.findAssessmentLocation(id);
 
@@ -120,7 +101,7 @@ export class AssessmentsStore {
     }
 
     async deleteAssessment(id: RecordIdString) {
-        await pb.collection(Collections.Assessments).delete(id);
+        await assessmentsService.remove(id);
         const location = this.findAssessmentLocation(id);
 
         if (location) {
@@ -132,12 +113,34 @@ export class AssessmentsStore {
 const [getAssessmentsContextInternal, setAssessmentsContextInternal] =
     createContext<AssessmentsStore>();
 
+let assessmentsStoreSingleton: AssessmentsStore | null = null;
+let assessmentsContextRegistered = false;
+
+const getOrCreateAssessmentsStore = () => {
+    if (!assessmentsStoreSingleton) {
+        assessmentsStoreSingleton = new AssessmentsStore();
+    }
+
+    return assessmentsStoreSingleton;
+};
+
 export const setAssessmentsContext = () => {
-    const store = new AssessmentsStore();
+    const store = getOrCreateAssessmentsStore();
+    assessmentsContextRegistered = true;
     setAssessmentsContextInternal(store);
     return store;
 };
 
 export const getAssessmentsContext = () => {
+    if (!assessmentsContextRegistered) {
+        return getOrCreateAssessmentsStore();
+    }
+
     return getAssessmentsContextInternal();
 };
+
+export type {
+    AssessmentCreateInput,
+    AssessmentUpdateInput,
+    AssessmentResponse
+} from '$lib/pocketbase/assessments.service';

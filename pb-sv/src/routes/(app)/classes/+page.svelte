@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { setClassesContext } from '$lib/pocketbase/classes.svelte';
+	import { setClassesContext } from '$lib/stores/classesStore.svelte';
 
 	const classesStore = setClassesContext();
 	const classrooms = $derived(classesStore.classes);

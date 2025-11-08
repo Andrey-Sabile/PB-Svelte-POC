@@ -1,20 +1,11 @@
-import { pb } from "$lib";
+import { createContext } from 'svelte';
 import {
-    Collections,
-    type AssignmentsRecord,
-    type AssignmentsResponse,
-    type RecordIdString
-} from "$lib/types/pocketbase-types";
-import { createContext } from "svelte";
-
-type AssignmentRecordBase = AssignmentsRecord;
-type AssignmentResponse = AssignmentsResponse<unknown>;
-
-const escapeFilterValue = (value: string) => value.replace(/"/g, '\\"');
-
-export type AssignmentCreateInput = Omit<AssignmentRecordBase, "id" | "created" | "updated"> &
-    Required<Pick<AssignmentRecordBase, "unitId">>;
-export type AssignmentUpdateInput = Partial<Omit<AssignmentRecordBase, "id" | "created" | "updated">>;
+    assignmentsService,
+    type AssignmentCreateInput,
+    type AssignmentResponse,
+    type AssignmentUpdateInput
+} from '$lib/pocketbase/assignments.service';
+import type { RecordIdString } from '$lib/types/pocketbase-types';
 
 export class AssignmentsStore {
     assignmentsByUnit = $state<Record<RecordIdString, AssignmentResponse[]>>({});
@@ -66,19 +57,13 @@ export class AssignmentsStore {
     }
 
     async refresh(unitId: RecordIdString) {
-        const filterUnitId = escapeFilterValue(unitId);
-        const records = await pb.collection(Collections.Assignments).getFullList<AssignmentResponse>({
-            filter: `unitId="${filterUnitId}"`
-        });
-
+        const records = await assignmentsService.listByUnit(unitId);
         this.setAssignments(unitId, records);
         return records;
     }
 
     async fetch(assignmentId: RecordIdString) {
-        const record = await pb
-            .collection(Collections.Assignments)
-            .getOne<AssignmentResponse>(assignmentId);
+        const record = await assignmentsService.get(assignmentId);
         const unitId = record.unitId;
 
         if (unitId) {
@@ -89,9 +74,7 @@ export class AssignmentsStore {
     }
 
     async createAssignment(data: AssignmentCreateInput) {
-        const created = await pb
-            .collection(Collections.Assignments)
-            .create<AssignmentResponse>(data);
+        const created = await assignmentsService.create(data);
         const unitId = created.unitId ?? data.unitId;
 
         if (unitId) {
@@ -102,9 +85,7 @@ export class AssignmentsStore {
     }
 
     async updateAssignment(id: RecordIdString, data: AssignmentUpdateInput) {
-        const updated = await pb
-            .collection(Collections.Assignments)
-            .update<AssignmentResponse>(id, data);
+        const updated = await assignmentsService.update(id, data);
         const nextUnitId = updated.unitId ?? data.unitId ?? null;
         const originalLocation = this.findAssignmentLocation(id);
 
@@ -120,7 +101,7 @@ export class AssignmentsStore {
     }
 
     async deleteAssignment(id: RecordIdString) {
-        await pb.collection(Collections.Assignments).delete(id);
+        await assignmentsService.remove(id);
         const location = this.findAssignmentLocation(id);
 
         if (location) {
@@ -132,12 +113,34 @@ export class AssignmentsStore {
 const [getAssignmentsContextInternal, setAssignmentsContextInternal] =
     createContext<AssignmentsStore>();
 
+let assignmentsStoreSingleton: AssignmentsStore | null = null;
+let assignmentsContextRegistered = false;
+
+const getOrCreateAssignmentsStore = () => {
+    if (!assignmentsStoreSingleton) {
+        assignmentsStoreSingleton = new AssignmentsStore();
+    }
+
+    return assignmentsStoreSingleton;
+};
+
 export const setAssignmentsContext = () => {
-    const store = new AssignmentsStore();
+    const store = getOrCreateAssignmentsStore();
+    assignmentsContextRegistered = true;
     setAssignmentsContextInternal(store);
     return store;
 };
 
 export const getAssignmentsContext = () => {
+    if (!assignmentsContextRegistered) {
+        return getOrCreateAssignmentsStore();
+    }
+
     return getAssignmentsContextInternal();
 };
+
+export type {
+    AssignmentCreateInput,
+    AssignmentUpdateInput,
+    AssignmentResponse
+} from '$lib/pocketbase/assignments.service';

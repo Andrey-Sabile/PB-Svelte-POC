@@ -10,7 +10,7 @@
 	const teachingUnits = $derived(teachingUnitStore.teachingUnits);
 
 	const unitId = $derived(
-		((page.params.unitId ?? null) as RecordIdString | null) satisfies RecordIdString | null
+		(page.params.unitId ?? null) as RecordIdString | null satisfies RecordIdString | null
 	);
 	let teachingUnit = $state<TeachingUnitWithExpand | null>(null);
 	let isLoading = $state(false);

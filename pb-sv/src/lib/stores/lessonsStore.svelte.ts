@@ -1,20 +1,11 @@
-import { pb } from "$lib";
+import { createContext } from 'svelte';
 import {
-    Collections,
-    type LessonsRecord,
-    type LessonsResponse,
-    type RecordIdString
-} from "$lib/types/pocketbase-types";
-import { createContext } from "svelte";
-
-type LessonRecordBase = LessonsRecord<unknown>;
-type LessonResponse = LessonsResponse<unknown, unknown>;
-
-const escapeFilterValue = (value: string) => value.replace(/"/g, '\\"');
-
-export type LessonCreateInput = Omit<LessonRecordBase, "id" | "created" | "updated"> &
-    Required<Pick<LessonRecordBase, "unitId">>;
-export type LessonUpdateInput = Partial<Omit<LessonRecordBase, "id" | "created" | "updated">>;
+    lessonsService,
+    type LessonCreateInput,
+    type LessonResponse,
+    type LessonUpdateInput
+} from '$lib/pocketbase/lessons.service';
+import type { RecordIdString } from '$lib/types/pocketbase-types';
 
 export class LessonsStore {
     lessonsByUnit = $state<Record<RecordIdString, LessonResponse[]>>({});
@@ -66,17 +57,13 @@ export class LessonsStore {
     }
 
     async refresh(unitId: RecordIdString) {
-        const filterUnitId = escapeFilterValue(unitId);
-        const records = await pb.collection(Collections.Lessons).getFullList<LessonResponse>({
-            filter: `unitId="${filterUnitId}"`
-        });
-
+        const records = await lessonsService.listByUnit(unitId);
         this.setLessons(unitId, records);
         return records;
     }
 
     async fetch(lessonId: RecordIdString) {
-        const record = await pb.collection(Collections.Lessons).getOne<LessonResponse>(lessonId);
+        const record = await lessonsService.get(lessonId);
         const unitId = record.unitId;
 
         if (unitId) {
@@ -87,7 +74,7 @@ export class LessonsStore {
     }
 
     async createLesson(data: LessonCreateInput) {
-        const created = await pb.collection(Collections.Lessons).create<LessonResponse>(data);
+        const created = await lessonsService.create(data);
         const unitId = created.unitId ?? data.unitId;
 
         if (unitId) {
@@ -98,7 +85,7 @@ export class LessonsStore {
     }
 
     async updateLesson(id: RecordIdString, data: LessonUpdateInput) {
-        const updated = await pb.collection(Collections.Lessons).update<LessonResponse>(id, data);
+        const updated = await lessonsService.update(id, data);
         const nextUnitId = updated.unitId ?? data.unitId ?? null;
         const originalLocation = this.findLessonLocation(id);
 
@@ -114,7 +101,7 @@ export class LessonsStore {
     }
 
     async deleteLesson(id: RecordIdString) {
-        await pb.collection(Collections.Lessons).delete(id);
+        await lessonsService.remove(id);
         const location = this.findLessonLocation(id);
 
         if (location) {
@@ -125,12 +112,34 @@ export class LessonsStore {
 
 const [getLessonsContextInternal, setLessonsContextInternal] = createContext<LessonsStore>();
 
+let lessonsStoreSingleton: LessonsStore | null = null;
+let lessonsContextRegistered = false;
+
+const getOrCreateLessonsStore = () => {
+    if (!lessonsStoreSingleton) {
+        lessonsStoreSingleton = new LessonsStore();
+    }
+
+    return lessonsStoreSingleton;
+};
+
 export const setLessonsContext = () => {
-    const store = new LessonsStore();
+    const store = getOrCreateLessonsStore();
+    lessonsContextRegistered = true;
     setLessonsContextInternal(store);
     return store;
 };
 
 export const getLessonsContext = () => {
+    if (!lessonsContextRegistered) {
+        return getOrCreateLessonsStore();
+    }
+
     return getLessonsContextInternal();
 };
+
+export type {
+    LessonCreateInput,
+    LessonUpdateInput,
+    LessonResponse
+} from '$lib/pocketbase/lessons.service';

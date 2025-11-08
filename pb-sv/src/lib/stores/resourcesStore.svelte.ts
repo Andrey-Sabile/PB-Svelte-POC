@@ -1,16 +1,11 @@
-import { pb } from "$lib";
+import { createContext } from 'svelte';
 import {
-    Collections,
-    type RecordIdString,
-    type ResourcesRecord,
-    type ResourcesResponse
-} from "$lib/types/pocketbase-types";
-import { createContext } from "svelte";
-
-type ResourceResponse = ResourcesResponse<unknown>;
-
-export type ResourceCreateInput = Omit<ResourcesRecord, "id" | "created" | "updated">;
-export type ResourceUpdateInput = Partial<Omit<ResourcesRecord, "id" | "created" | "updated">>;
+    resourcesService,
+    type ResourceCreateInput,
+    type ResourceResponse,
+    type ResourceUpdateInput
+} from '$lib/pocketbase/resources.service';
+import type { RecordIdString } from '$lib/types/pocketbase-types';
 
 export class ResourcesStore {
     private resourceCache = $state<Record<RecordIdString, ResourceResponse>>({});
@@ -87,7 +82,9 @@ export class ResourcesStore {
 
     getResources(unitId: RecordIdString) {
         const ids = this.resourceIdsByUnit[unitId] ?? [];
-        return ids.map((id) => this.resourceCache[id]).filter((resource): resource is ResourceResponse => !!resource);
+        return ids
+            .map((id) => this.resourceCache[id])
+            .filter((resource): resource is ResourceResponse => !!resource);
     }
 
     hydrate(unitId: RecordIdString, resources: ResourceResponse[] = []) {
@@ -114,9 +111,7 @@ export class ResourcesStore {
 
         const missing = resourceIds.filter((id) => !this.resourceCache[id]);
         if (missing.length) {
-            const fetched = await Promise.all(
-                missing.map((id) => pb.collection(Collections.Resources).getOne<ResourceResponse>(id))
-            );
+            const fetched = await resourcesService.getMany(missing);
 
             let nextCache = { ...this.resourceCache };
             for (const resource of fetched) {
@@ -129,7 +124,7 @@ export class ResourcesStore {
     }
 
     async fetch(resourceId: RecordIdString, unitId?: RecordIdString) {
-        const record = await pb.collection(Collections.Resources).getOne<ResourceResponse>(resourceId);
+        const record = await resourcesService.get(resourceId);
         this.writeResource(record);
 
         if (unitId) {
@@ -140,7 +135,7 @@ export class ResourcesStore {
     }
 
     async createResource(data: ResourceCreateInput, unitId?: RecordIdString) {
-        const created = await pb.collection(Collections.Resources).create<ResourceResponse>(data);
+        const created = await resourcesService.create(data);
         this.writeResource(created);
 
         if (unitId) {
@@ -151,13 +146,13 @@ export class ResourcesStore {
     }
 
     async updateResource(id: RecordIdString, data: ResourceUpdateInput) {
-        const updated = await pb.collection(Collections.Resources).update<ResourceResponse>(id, data);
+        const updated = await resourcesService.update(id, data);
         this.writeResource(updated);
         return updated;
     }
 
     async deleteResource(id: RecordIdString, unitId?: RecordIdString) {
-        await pb.collection(Collections.Resources).delete(id);
+        await resourcesService.remove(id);
 
         if (unitId) {
             this.unlinkResource(unitId, id);
@@ -182,12 +177,34 @@ export class ResourcesStore {
 
 const [getResourcesContextInternal, setResourcesContextInternal] = createContext<ResourcesStore>();
 
+let resourcesStoreSingleton: ResourcesStore | null = null;
+let resourcesContextRegistered = false;
+
+const getOrCreateResourcesStore = () => {
+    if (!resourcesStoreSingleton) {
+        resourcesStoreSingleton = new ResourcesStore();
+    }
+
+    return resourcesStoreSingleton;
+};
+
 export const setResourcesContext = () => {
-    const store = new ResourcesStore();
+    const store = getOrCreateResourcesStore();
+    resourcesContextRegistered = true;
     setResourcesContextInternal(store);
     return store;
 };
 
 export const getResourcesContext = () => {
+    if (!resourcesContextRegistered) {
+        return getOrCreateResourcesStore();
+    }
+
     return getResourcesContextInternal();
 };
+
+export type {
+    ResourceCreateInput,
+    ResourceUpdateInput,
+    ResourceResponse
+} from '$lib/pocketbase/resources.service';
