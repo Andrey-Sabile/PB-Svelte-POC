@@ -2,6 +2,7 @@
 	import { ArrowLeft, Plus } from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+	import LessonsTab from '$lib/components/LessonsTab.svelte';
 	import {
 		getTeachingUnitContext,
 		type TeachingUnitWithExpand
@@ -166,10 +167,16 @@
 						value={tab.id}
 						bind:group={activeTab}
 					/>
-					<div class="tab-content bg-base-100 border-base-300 p-6">Tab content 1</div>
-				{/each}
-			</div>
-		</section>
+				<div class="tab-content bg-base-100 border-base-300 p-6">
+					{#if tab.id === 'lessons'}
+						<LessonsTab {unitId} {lessons} />
+					{:else}
+						<p class="text-sm text-neutral-500">Content coming soon.</p>
+					{/if}
+				</div>
+			{/each}
+		</div>
+	</section>
 	{/if}
 </main>
 

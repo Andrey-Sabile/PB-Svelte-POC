@@ -1,38 +1,24 @@
 import { pb } from '$lib';
 import {
     Collections,
-    TeachingUnitsStatusOptions,
     type ClassroomsResponse,
-    type IsoDateString,
     type RecordIdString,
+    type TeachingUnitsRecord,
     type TeachingUnitsResponse
 } from '$lib/types/pocketbase-types';
 
+export type TeachingUnitRecordBase = TeachingUnitsRecord<string[]>;
 export type TeachingUnitExpand = {
     classId?: ClassroomsResponse;
-} & Record<string, unknown>;
-
-export type TeachingUnitWithExpand = TeachingUnitsResponse<string[], TeachingUnitExpand>;
-
-export type TeachingUnitCreateInput = {
-    title: string;
-    classId: RecordIdString;
-    userid: RecordIdString;
-    status?: TeachingUnitsStatusOptions;
-    description?: string;
-    subject?: string;
-    gradeLevel?: string;
-    startDate?: IsoDateString | null;
-    endDate?: IsoDateString | null;
-    learningObjectives?: RecordIdString[];
-    lessons?: RecordIdString[];
-    resources?: RecordIdString[];
-    assignments?: RecordIdString[];
-    assessments?: RecordIdString[];
-    tags?: string[] | null;
 };
+export type TeachingUnitResponse = TeachingUnitsResponse<string[], TeachingUnitExpand>;
+export type TeachingUnitWithExpand = TeachingUnitResponse;
 
-export type TeachingUnitUpdateInput = Partial<TeachingUnitCreateInput>;
+type WritableTeachingUnitFields = Omit<TeachingUnitRecordBase, 'id' | 'created' | 'updated'>;
+
+export type TeachingUnitCreateInput = WritableTeachingUnitFields &
+    Required<Pick<WritableTeachingUnitFields, 'userid'>>;
+export type TeachingUnitUpdateInput = Partial<WritableTeachingUnitFields>;
 
 export const TEACHING_UNIT_EXPAND_KEY = 'classId' as const;
 
