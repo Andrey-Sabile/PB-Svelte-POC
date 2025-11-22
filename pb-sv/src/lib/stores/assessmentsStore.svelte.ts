@@ -5,10 +5,12 @@ import {
     type AssessmentResponse,
     type AssessmentUpdateInput
 } from '$lib/pocketbase/assessments.service';
-import type { RecordIdString } from '$lib/types/pocketbase-types';
+import { Collections, type RecordIdString } from '$lib/types/pocketbase-types';
+import { pb } from '$lib';
 
 export class AssessmentsStore {
     assessmentsByUnit = $state<Record<RecordIdString, AssessmentResponse[]>>({});
+    private subscriptions: Record<string, () => void> = {};
 
     private setAssessments(unitId: RecordIdString, assessments: AssessmentResponse[]) {
         this.assessmentsByUnit = {
@@ -60,6 +62,31 @@ export class AssessmentsStore {
         const records = await assessmentsService.listByUnit(unitId);
         this.setAssessments(unitId, records);
         return records;
+    }
+
+    async subscribe(unitId: RecordIdString) {
+        if (this.subscriptions[unitId]) return;
+
+        const unsubscribe = await pb.collection(Collections.Assessments).subscribe<AssessmentResponse>('*', (e) => {
+            if (e.record.unitId !== unitId) return;
+
+            if (e.action === 'create') {
+                this.upsertAssessment(unitId, e.record);
+            } else if (e.action === 'update') {
+                this.upsertAssessment(unitId, e.record);
+            } else if (e.action === 'delete') {
+                this.removeAssessment(unitId, e.record.id);
+            }
+        }, { filter: `unitId="${unitId}"` });
+
+        this.subscriptions[unitId] = unsubscribe;
+    }
+
+    unsubscribe(unitId: RecordIdString) {
+        if (this.subscriptions[unitId]) {
+            this.subscriptions[unitId]();
+            delete this.subscriptions[unitId];
+        }
     }
 
     async fetch(assessmentId: RecordIdString) {

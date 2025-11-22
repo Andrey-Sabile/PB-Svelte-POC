@@ -7,22 +7,28 @@ class AuthStore {
     isSynced = $state(false);
 
     constructor() {
-        $effect(() => {
-            if (pb.authStore.isValid) {
-                this.user = pb.authStore.record as UsersResponse
-            }
-            this.isSynced = true;
-        })
+        this.user = pb.authStore.record as UsersResponse | null;
+        this.isSynced = true;
+
+        pb.authStore.onChange((token, model) => {
+            this.user = model as UsersResponse | null;
+        });
     }
 
     async loginWithPassword(email: string, password: string) {
-        const authData = await pb.collection('users').authWithPassword(email, password);
-        this.user = authData.record as UsersResponse;
+        await pb.collection('users').authWithPassword(email, password);
+        // The onChange handler will update the state
     }
 
     logout() {
         pb.authStore.clear();
-        this.user = null;
+        // The onChange handler will update the state
+    }
+
+    async update(data: Partial<UsersResponse>) {
+        if (!this.user?.id) return;
+        await pb.collection('users').update(this.user.id, data);
+        // The onChange handler will update the state if the record is updated
     }
 }
 
